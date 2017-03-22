@@ -8,9 +8,9 @@ void inicia (void) {
 }
 
 void button_changed (int pin, int v) {
-  Serial.print (pin);
+  Serial.print (pin + KEY1);
   Serial.print (" mudou para ");
-  Serial.print (v);
+  Serial.println (v);
 }
 
 void timer_expired () {
