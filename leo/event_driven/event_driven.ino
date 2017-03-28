@@ -4,8 +4,8 @@
 unsigned long timer = 0;
 unsigned long lastTime = millis();
 
-int lastState = 0;
-int pinBitVector = -1;
+unsigned lastStateVector = 0;
+unsigned pinBitVector = 0;
 
 void button_listen(int pins) {
   pinBitVector = pins;
@@ -22,26 +22,27 @@ void setup() {
 
 void loop() {
 
-  if (timer > -1 && millis() - lastTime > timer) {
+  if (timer > 0 && millis() - lastTime > timer) {
      timer_expired(); 
-     timer = -1;
+     lastTime = millis();
   }
   
   if (pinBitVector) {
     int pin = A1;
     int auxPin = pinBitVector;
+    int i = 0;
     
     while (auxPin) {
       if (auxPin & 1) {
          int state = digitalRead(pin);
-    
-         if (lastState != state) {
-            lastState = state;
+         if (((lastStateVector >> i) & 1) != state) {
+            lastStateVector = lastStateVector ^ (1 << i);
             button_changed(pin, state);   
          }   
       }
       pin++;
-      auxPin >= 1;
+      auxPin >>= 1;
+      i++;
     }   
   }
 }

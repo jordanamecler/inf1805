@@ -8,7 +8,7 @@ void button_changed(int pin, int v) {
 }
 
 void timer_expired() {
-    Serial.print("Tempo expirou...");
+    Serial.println("Tempo expirou...");
 }
 
 void inic() {
