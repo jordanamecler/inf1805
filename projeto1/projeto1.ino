@@ -7,6 +7,7 @@
  */
 #include "Volume.h"
 #include "mario.h"
+#include "starwars.h"
 
 Volume vol; // Plug your speaker into the default pin for your board type:
 // https://github.com/connornishijima/arduino-volume#supported-pins 
@@ -21,6 +22,7 @@ Volume vol; // Plug your speaker into the default pin for your board type:
 
 int maximumRange = 200; // Maximum range needed
 int minimumRange = 0; // Minimum range needed
+float masterVolume = 255;
 
 
 void setup() {
@@ -48,44 +50,41 @@ void setToneByDistance(int distance) {
   Serial.println(hz);
 }
 
-void setVolumeByDistance(int distance) {
-   float volumeValue = (1/10.0) * distance;
+float setVolumeByDistance(int distance) {
+   if (distance < 3) return 0;
+   float volumeValue = (255/10.0) * distance;
    Serial.println(distance);
-   vol.setMasterVolume(volumeValue);
+   
+   return volumeValue;
 }
 
 void loop() {
  
     Serial.println(" 'Mario Theme'");
-    int size = sizeof(melody) / sizeof(int);
+    int size = sizeof(sw_melody) / sizeof(int);
     for (int thisNote = 0; thisNote < size; thisNote++) {
    
-      // to calculate the note duration, take one second
-      // divided by the note type.
-      //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-      int noteDuration = 1000 * 1.30 / tempo[thisNote];
+     
  
-      //buzz(melodyPin, melody[thisNote], noteDuration);
-      vol.tone(melody[thisNote]);
-      vol.delay(noteDuration);
-      
-       long distance = getDistance();
-       
+      long distance = getDistance();
        if (distance <= 20 && distance >= minimumRange){  
-          setVolumeByDistance(distance);
+          masterVolume = setVolumeByDistance(distance);
        }
-       
        else {
          Serial.println("Fora de alcance");
        }
- 
+      
+//      int noteDuration = 1000 * / sw_tempo[thisNote];
+      vol.tone(sw_melody[thisNote], masterVolume);
+//      vol.delay(noteDuration);
+        vol.delay(sw_tempo[thisNote]);
     }
 
  delay(50);
 }
 
 void buzz(int targetPin, long frequency, long length) {
-  digitalWrite(13, HIGH);
+
   long delayValue = 1000000 / frequency / 2; // calculate the delay value between transitions
   //// 1 second's worth of microseconds, divided by the frequency, then split in half since
   //// there are two phases to each cycle
@@ -98,7 +97,6 @@ void buzz(int targetPin, long frequency, long length) {
     digitalWrite(targetPin, LOW); // write the buzzer pin low to pull back the diaphram
     delayMicroseconds(delayValue); // wait again or the calculated delay value
   }
-  digitalWrite(13, LOW);
  
 }
 
