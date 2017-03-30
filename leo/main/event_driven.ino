@@ -37,11 +37,11 @@ void loop() {
          int state = digitalRead(pin);
          if (((lastStateVector >> i) & 1) != state) {
             lastStateVector = lastStateVector ^ (1 << i);
-            button_changed(pin, state);   
+            button_changed(pin, state); 
          }   
       }
       pin++;
-      auxPin = auxPin >> 1;
+      auxPin >>= 1;
       i++;
     }   
   }

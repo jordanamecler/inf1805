@@ -19,5 +19,5 @@ void inic() {
   pinMode(A3, INPUT);
 
   timer_set(1000);
-  button_listen(KEY1 || KEY3);
+  button_listen(KEY1 | KEY3);
 }
