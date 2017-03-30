@@ -1,4 +1,4 @@
- 
+
 const int c = 261;
 const int d = 294;
 const int e = 329;
@@ -18,6 +18,8 @@ const int fSH = 740;
 const int gH = 784;
 const int gSH = 830;
 const int aH = 880;
+
+int sw_size = 74;
 
 int sw_melody[] = {
   a, a, a, f, cH, a, f, cH, a, 0, eH, eH, eH, fH, cH, gS, f, cH, a, 0,

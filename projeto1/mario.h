@@ -89,8 +89,12 @@
 #define NOTE_DS8 4978
  
 #define melodyPin 5
-//Mario main theme melody
-int melody[] = {
+
+int mario_size = 78;
+int underworld_size = 56;
+
+
+int mario_melody[] = {
   NOTE_E7, NOTE_E7, 0, NOTE_E7,
   0, NOTE_C7, NOTE_E7, 0,
   NOTE_G7, 0, 0,  0,
@@ -117,7 +121,7 @@ int melody[] = {
   NOTE_D7, NOTE_B6, 0, 0
 };
 //Mario main them tempo
-int tempo[] = {
+int mario_tempo[] = {
   12, 12, 12, 12,
   12, 12, 12, 12,
   12, 12, 12, 12,

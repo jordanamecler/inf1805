@@ -44,10 +44,10 @@ void setToneByDistance(int distance) {
   int hz = 100 * distance + 20;
   tone(buzzerPin, hz);
   
-  Serial.print("Distancia ");
-  Serial.println(distance);
-  Serial.print("hz ");
-  Serial.println(hz);
+//  Serial.print("Distancia ");
+//  Serial.println(distance);
+//  Serial.print("hz ");
+//  Serial.println(hz);
 }
 
 float setVolumeByDistance(int distance) {
@@ -58,29 +58,60 @@ float setVolumeByDistance(int distance) {
    return volumeValue;
 }
 
+long getDistance() {
+  /* The following trigPin/echoPin cycle is used to determine the
+ distance of the nearest object by bouncing soundwaves off of it. */ 
+ digitalWrite(trigPin, LOW); 
+ delayMicroseconds(2); 
+
+ digitalWrite(trigPin, HIGH);
+ delayMicroseconds(10); 
+ 
+ digitalWrite(trigPin, LOW);
+ long duration = pulseIn(echoPin, HIGH);
+ 
+ //Calculate the distance (in cm) based on the speed of sound.
+ return duration/58.2;
+ 
+}
+
 void loop() {
+
+    int * songs_array[] = {sw_melody, mario_melody, underworld_melody};
+    int * tempo_array[] = {sw_tempo, mario_tempo, underworld_tempo};
+    int sizes_array[] = {sw_size, mario_size, underworld_size};
+    int song_index = 0;
+
+    int * melody = songs_array[song_index];
+    int * tempo  = tempo_array[song_index];
+    int melody_size = sizes_array[song_index];
+    
+    int song_size = sizeof(melody) / sizeof(int);
+    for (int thisNote = 0; thisNote < melody_size; thisNote++) {
  
-    Serial.println(" 'Mario Theme'");
-    int size = sizeof(sw_melody) / sizeof(int);
-    for (int thisNote = 0; thisNote < size; thisNote++) {
-   
-     
- 
-      long distance = getDistance();
+       long distance = getDistance();
        if (distance <= 20 && distance >= minimumRange){  
           masterVolume = setVolumeByDistance(distance);
        }
        else {
          Serial.println("Fora de alcance");
        }
-      
-//      int noteDuration = 1000 * / sw_tempo[thisNote];
-      vol.tone(sw_melody[thisNote], masterVolume);
-//      vol.delay(noteDuration);
-        vol.delay(sw_tempo[thisNote]);
-    }
 
- delay(50);
+      int noteDuration = 0;
+      if (song_index == 0) {
+        noteDuration = tempo[thisNote];
+      }
+      else {
+        noteDuration = 1000 * 1.3 / tempo[thisNote];
+      }  
+      Serial.print("Note ");
+      Serial.println(melody[thisNote]);
+      Serial.print("Tempo ");
+      Serial.println(noteDuration);
+      vol.tone(melody[thisNote], masterVolume);
+      vol.delay(noteDuration);
+    }
+    delay(50);
 }
 
 void buzz(int targetPin, long frequency, long length) {
@@ -100,21 +131,5 @@ void buzz(int targetPin, long frequency, long length) {
  
 }
 
-long getDistance() {
-  /* The following trigPin/echoPin cycle is used to determine the
- distance of the nearest object by bouncing soundwaves off of it. */ 
- digitalWrite(trigPin, LOW); 
- delayMicroseconds(2); 
-
- digitalWrite(trigPin, HIGH);
- delayMicroseconds(10); 
- 
- digitalWrite(trigPin, LOW);
- long duration = pulseIn(echoPin, HIGH);
- 
- //Calculate the distance (in cm) based on the speed of sound.
- return duration/58.2;
- 
-}
 
 
