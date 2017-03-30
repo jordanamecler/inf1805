@@ -7,6 +7,7 @@
  */
 #include "Volume.h"
 #include "mario.h"
+#include "starwars.h"
 
 Volume vol; // Plug your speaker into the default pin for your board type:
 // https://github.com/connornishijima/arduino-volume#supported-pins 
@@ -21,6 +22,7 @@ Volume vol; // Plug your speaker into the default pin for your board type:
 
 int maximumRange = 200; // Maximum range needed
 int minimumRange = 0; // Minimum range needed
+float masterVolume = 255;
 
 
 void setup() {
@@ -42,64 +44,18 @@ void setToneByDistance(int distance) {
   int hz = 100 * distance + 20;
   tone(buzzerPin, hz);
   
-  Serial.print("Distancia ");
-  Serial.println(distance);
-  Serial.print("hz ");
-  Serial.println(hz);
+//  Serial.print("Distancia ");
+//  Serial.println(distance);
+//  Serial.print("hz ");
+//  Serial.println(hz);
 }
 
-void setVolumeByDistance(int distance) {
-   float volumeValue = (1/10.0) * distance;
+float setVolumeByDistance(int distance) {
+   if (distance < 3) return 0;
+   float volumeValue = (255/10.0) * distance;
    Serial.println(distance);
-   vol.setMasterVolume(volumeValue);
-}
-
-void loop() {
- 
-    Serial.println(" 'Mario Theme'");
-    int size = sizeof(melody) / sizeof(int);
-    for (int thisNote = 0; thisNote < size; thisNote++) {
    
-      // to calculate the note duration, take one second
-      // divided by the note type.
-      //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-      int noteDuration = 1000 * 1.30 / tempo[thisNote];
- 
-      //buzz(melodyPin, melody[thisNote], noteDuration);
-      vol.tone(melody[thisNote]);
-      vol.delay(noteDuration);
-      
-       long distance = getDistance();
-       
-       if (distance <= 20 && distance >= minimumRange){  
-          setVolumeByDistance(distance);
-       }
-       
-       else {
-         Serial.println("Fora de alcance");
-       }
- 
-    }
-
- delay(50);
-}
-
-void buzz(int targetPin, long frequency, long length) {
-  digitalWrite(13, HIGH);
-  long delayValue = 1000000 / frequency / 2; // calculate the delay value between transitions
-  //// 1 second's worth of microseconds, divided by the frequency, then split in half since
-  //// there are two phases to each cycle
-  long numCycles = frequency * length / 1000; // calculate the number of cycles for proper timing
-  //// multiply frequency, which is really cycles per second, by the number of seconds to
-  //// get the total number of cycles to produce
-  for (long i = 0; i < numCycles; i++) { // for the calculated length of time...
-    digitalWrite(targetPin, HIGH); // write the buzzer pin high to push out the diaphram
-    delayMicroseconds(delayValue); // wait for the calculated delay value
-    digitalWrite(targetPin, LOW); // write the buzzer pin low to pull back the diaphram
-    delayMicroseconds(delayValue); // wait again or the calculated delay value
-  }
-  digitalWrite(13, LOW);
- 
+   return volumeValue;
 }
 
 long getDistance() {
@@ -118,5 +74,62 @@ long getDistance() {
  return duration/58.2;
  
 }
+
+void loop() {
+
+    int * songs_array[] = {sw_melody, mario_melody, underworld_melody};
+    int * tempo_array[] = {sw_tempo, mario_tempo, underworld_tempo};
+    int sizes_array[] = {sw_size, mario_size, underworld_size};
+    int song_index = 0;
+
+    int * melody = songs_array[song_index];
+    int * tempo  = tempo_array[song_index];
+    int melody_size = sizes_array[song_index];
+    
+    int song_size = sizeof(melody) / sizeof(int);
+    for (int thisNote = 0; thisNote < melody_size; thisNote++) {
+ 
+       long distance = getDistance();
+       if (distance <= 20 && distance >= minimumRange){  
+          masterVolume = setVolumeByDistance(distance);
+       }
+       else {
+         Serial.println("Fora de alcance");
+       }
+
+      int noteDuration = 0;
+      if (song_index == 0) {
+        noteDuration = tempo[thisNote];
+      }
+      else {
+        noteDuration = 1000 * 1.3 / tempo[thisNote];
+      }  
+      Serial.print("Note ");
+      Serial.println(melody[thisNote]);
+      Serial.print("Tempo ");
+      Serial.println(noteDuration);
+      vol.tone(melody[thisNote], masterVolume);
+      vol.delay(noteDuration);
+    }
+    delay(50);
+}
+
+void buzz(int targetPin, long frequency, long length) {
+
+  long delayValue = 1000000 / frequency / 2; // calculate the delay value between transitions
+  //// 1 second's worth of microseconds, divided by the frequency, then split in half since
+  //// there are two phases to each cycle
+  long numCycles = frequency * length / 1000; // calculate the number of cycles for proper timing
+  //// multiply frequency, which is really cycles per second, by the number of seconds to
+  //// get the total number of cycles to produce
+  for (long i = 0; i < numCycles; i++) { // for the calculated length of time...
+    digitalWrite(targetPin, HIGH); // write the buzzer pin high to push out the diaphram
+    delayMicroseconds(delayValue); // wait for the calculated delay value
+    digitalWrite(targetPin, LOW); // write the buzzer pin low to pull back the diaphram
+    delayMicroseconds(delayValue); // wait again or the calculated delay value
+  }
+ 
+}
+
 
 

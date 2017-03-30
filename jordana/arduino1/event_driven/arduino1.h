@@ -8,6 +8,6 @@
 #define KEY3       A3
 #define POT        A0
 
-void button_changed (int pin, int v);
-void timer_expired (void);
-void inicia (void);
+void button_changed(int pin, int v);
+void timer_expired(void);
+void inicia(void);
