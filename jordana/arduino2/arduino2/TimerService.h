@@ -38,6 +38,8 @@ class TimerService {
      * id: Timer id -   0 .. (MAX_TIMERS-1)
      */
     boolean isRunning(uint8_t id);
+    
+    uint32_t timeRemaining(uint8_t id);
 
     /*
      * Clear the timer counting and the cb function registration.

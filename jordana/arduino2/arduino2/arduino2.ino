@@ -34,12 +34,12 @@ void button_changed(int pin, int v) {
   
   if(pin == KEY1 && v && !lastBut1) {
     maxSeg /= 1.1;
-    timer_set(maxSeg);
+//    timer_set(maxSeg);
   }
   
   if(pin == KEY2 && v && !lastBut2) {
     maxSeg *= 1.1;
-    timer_set(maxSeg);
+//    timer_set(maxSeg);
   }
   
   lastBut1 = v;

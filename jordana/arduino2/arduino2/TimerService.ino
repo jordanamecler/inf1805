@@ -73,6 +73,11 @@ boolean TimerService::isRunning(uint8_t id){
       return timers[id].remaining > 0;
     }
 }
+
+uint32_t TimerService::timeRemaining(uint8_t id){
+  return timers[id].remaining;
+}
+
 void TimerService::stop(uint8_t id){
     if (id < MAX_TIMERS){
       timers[id].cb = dummy;

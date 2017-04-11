@@ -58,5 +58,6 @@ void inic() {
   pinMode(LED_PIN, OUTPUT);
 
   timer_set(maxSeg);
-  button_listen(KEY1 | KEY2);  
+  button_listen(KEY1); 
+  button_listen(KEY2);  
 }
