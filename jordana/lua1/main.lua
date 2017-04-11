@@ -27,8 +27,12 @@ function retangulo (x,y,w,h)
 end
       
 function love.load()
-  ret1 = retangulo (50, 200, 200, 150)
-  ret2 = retangulo (300, 200, 200, 150)
+  retangulos = {}
+  local x = 50
+  for i = 1, 2 do
+     retangulos[i] = retangulo (x, 200, 200, 150)
+     x = x + 300
+  end
 end
 
 function naimagem (mx, my, x, y, rw, rh) 
@@ -36,16 +40,19 @@ function naimagem (mx, my, x, y, rw, rh)
 end
 
 function love.keypressed(key)
-  ret1.keypressed(key)
-  ret2.keypressed(key)
+  for i = 1, #retangulos do
+     retangulos[i].keypressed(key)
+  end
 end
 
 function love.update ()
-  ret1.update()
-  ret2.update()
+  for i = 1, #retangulos do
+     retangulos[i].update()
+  end
 end
 
 function love.draw ()
-  ret1.draw()
-  ret2.draw()
+  for i = 1, #retangulos do
+     retangulos[i].draw()
+  end
 end
