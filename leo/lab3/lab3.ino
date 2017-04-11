@@ -12,7 +12,7 @@ typedef struct button {
 bool ledOn = false;
 Button b1;
 Button b2;
-int maxSeg = 1000;
+float maxSeg = 1000;
 
 void button_changed(int pin, int v) {
     
@@ -32,7 +32,6 @@ void button_changed(int pin, int v) {
     digitalWrite(LED_PIN, LOW);
     while(1);
   }
-  timer_set(maxSeg);
 }
 
 void timer_expired() {
@@ -40,7 +39,8 @@ void timer_expired() {
       digitalWrite(LED_PIN, LOW);
     else
       digitalWrite(LED_PIN, HIGH);
-    ledOn = !ledOn;      
+    ledOn = !ledOn;   
+    timer_set(maxSeg);   
 }
 
 void inic() {

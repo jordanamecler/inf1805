@@ -1,6 +1,8 @@
 #include "event_driven.h"
 #include "lab3.h"
 
+TimerService myTimer;  
+
 unsigned long timer = 0;
 unsigned long lastTime = millis();
 
@@ -18,9 +20,9 @@ void button_listen(byte pin) {
   activePins[pin - KEY1] = 1;
 }
 
-void timer_set(int ms) {
-  if (ms > 0)
-    timer = ms;
+void timer_set(float ms) {
+   myTimer.stop();
+   myTimer.set(0, ms/1000, timer_expired);
 }
 
 // Use one Routine to handle each group
@@ -41,13 +43,12 @@ ISR (PCINT1_vect) // handle pin change interrupt for A0 to A5 here
  }   
 
 void setup() {
+  myTimer.init();
+
   inic();
 }
 
 void loop() {
 
-  if (timer > 0 && millis() - lastTime > timer) {
-     timer_expired(); 
-     lastTime = millis();
-  }
+ 
 }
