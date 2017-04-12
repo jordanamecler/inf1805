@@ -11,8 +11,8 @@ function retangulo (x,y,w,h)
 	function (key)
 	   local mx, my = love.mouse.getPosition()
 	   if key == 'b' and naimagem (mx,my, x, y, rw, rh) then
-     		ry = originalx
-     		rx = originaly
+     		rx = originalx
+     		ry = originaly
   	   elseif key == "down" and naimagem(mx, my, x, y, rw, rh)  then
      		ry = ry + 10
   	   elseif key == "right" and naimagem(mx, my, x, y, rw, rh) then
