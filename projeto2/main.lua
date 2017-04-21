@@ -1,18 +1,10 @@
 function newblip (vel)
-  local x, y = 0, 0
+  local width, height = love.graphics.getDimensions( )
+  local x, y = love.math.random(width), love.math.random(height)
   return {
     timeInactive = 0,
-    update = coroutine.wrap ( function (self)
-		local width, height = love.graphics.getDimensions( )
-		while true do
-      			x = x+3
-      			if x > width then
-      			-- volta ร  esquerda da janela
-        			x = 0
-      			end
-			wait (vel/50, self)
-		end
-    end),
+    update = function (self)
+		end,
     affected = function (pos)
       if pos>x and pos<x+10 then
       -- "pegou" o blip
@@ -27,37 +19,89 @@ function newblip (vel)
   }
 end
 
-function wait (segundos, meublip)
-   meublip.timeInactive = segundos + tempo
-   coroutine.yield ()
-end
-
 function newplayer ()
+  local lastPos = "right"
   local x, y = 0, 200
+  local playerWidth = x + 30
+  local playerHeight = y
   local width, height = love.graphics.getDimensions( )
   return {
   try = function ()
     return x
   end,
   update = function (dt)
-    x = x + 0.5
-    if x > width then
-      x = 0
+    if lastPos == "right" then
+      x = x + 0.5
+      if x > width then
+        x = 0
+      end
+      playerWidth = x + 30
+      playerHeight = y
+    elseif lastPos == "left" then
+      x = x - 0.5
+      if x < 0 then
+        x = width
+      end
+      playerWidth = x + 30
+      playerHeight = y
+    elseif lastPos == "up" then
+      y = y - 0.5
+      if y > height then
+        y = 0
+      end
+      playerWidth = x
+      playerHeight = y + 30
+    elseif lastPos == "down" then
+      y = y + 0.5
+      if y < 0 then
+        y = height
+      end
+      playerWidth = x
+      playerHeight = y + 30
     end
   end,
   draw = function ()
-    love.graphics.line(x, y, x + 30, y)
+    love.graphics.line(x, y, playerWidth, playerHeight)
+  end,
+  keypressed = function (key)
+    if key == "down" then
+      if lastPos == "down" or lastPos == "up" then
+        return
+      else
+        lastPos = "down"
+      end
+    elseif key == "up" then
+      if lastPos == "down" or lastPos == "up" then
+        return
+      else
+        lastPos = "up"
+      end
+    elseif key == "right" then
+      if lastPos == "right" or lastPos == "left" then
+        return
+      else
+        lastPos = "right"
+      end
+    elseif key == "left" then
+      if lastPos == "right" or lastPos == "left" then
+        return
+      else
+        lastPos = "left"
+      end
+    end
   end
   }
 end
 
 function love.keypressed(key)
+  player.keypressed (key)
   if key == 'a' then
     pos = player.try()
     for i in ipairs(listabls) do
       local hit = listabls[i].affected(pos)
       if hit then
         table.remove(listabls, i) -- esse blip "morre"
+        listabls[1] = newblip(1)
         return -- assumo que sรณ vai pegar um blip
       end
     end
@@ -68,9 +112,7 @@ function love.load()
   tempo = 0
   player =  newplayer()
   listabls = {}
-  for i = 1, 5 do
-    listabls[i] = newblip(i)
-  end
+  listabls[1] = newblip(1)
 end
 
 function love.draw()
