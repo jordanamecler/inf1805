@@ -28,8 +28,13 @@ end
 function snake(x, y)
   local blocks = { block(x, y) }
   local screenWidth, screenHeight = love.graphics.getDimensions()
+  local lastUpdate = 0
   return {
-    update = function()
+    update = function(time)
+      if time < lastUpdate + 0.1 then
+        return
+      end
+      lastUpdate = time
       for i in ipairs(blocks) do
         i = #blocks - i + 1
         if i ~= 1 then
@@ -225,9 +230,6 @@ function love.update(dt)
   -- player.update(dt)
   -- bls.update(dt)
   time = time + dt
-  if time > 0.1 then
-    snake.update()  
-    time = 0
-  end
+  snake.update(time)  
   
 end
