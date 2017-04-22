@@ -12,7 +12,6 @@ lastKeyPressed = "right"
 function newblip ()
   local width, height = love.graphics.getDimensions( )
   local x, y = love.math.random(width /10 - 1) * 10, love.math.random(height/10 - 1) * 10
-  local x, y = love.math.random(width/10 - 1) * 10, love.math.random(height/10 - 1) * 10
   return {
     getPosition = function ()
       return x, y
@@ -113,7 +112,7 @@ function block(x, y)
       self.direction = nextBlock.direction
     end,
     draw = function (self)
-      love.graphics.rectangle("line", self.x, self.y, width, height)
+      love.graphics.rectangle("fill", self.x, self.y, width, height)
     end
   }
 end
