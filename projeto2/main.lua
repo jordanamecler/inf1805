@@ -5,19 +5,15 @@ function Set (list)
 end
 
 directions = Set{"up", "down", "right", "left"}
+time = 0
 
 function newblip ()
   local width, height = love.graphics.getDimensions( )
-  local x, y = love.math.random(width - 10), love.math.random(height - 10)
+  local x, y = love.math.random(width /10 - 1) * 10, love.math.random(height/10 - 1) * 10
+  local x, y = love.math.random(width/10 - 1) * 10, love.math.random(height/10 - 1) * 10
   return {
-    update = function (dt)
-		end,
-    affected = function (playerWidth, playerHeight)
-      if playerWidth>x and playerWidth<x+10 and playerHeight>y and playerHeight<y+10 then
-        return true
-      else
-        return false
-      end
+    getPosition = function ()
+      return x, y
     end,
     draw = function ()
       love.graphics.rectangle("line", x, y, 10, 10)
@@ -30,18 +26,18 @@ function snake(x, y)
   local screenWidth, screenHeight = love.graphics.getDimensions()
   local lastUpdate = 0
   return {
+    getPosition = function()
+      return blocks[1].x, blocks[1].y
+    end,
     update = function(time)
-      if time < lastUpdate + 0.1 then
+      if time < lastUpdate + 0.05 then
         return
       end
       lastUpdate = time
       for i in ipairs(blocks) do
         i = #blocks - i + 1
         if i ~= 1 then
-          print (i)
           local b = blocks[i]
-          print (b.x)
-          print (blocks[i - 1].x)
           b:update(blocks[i - 1])
         end
       end
@@ -93,9 +89,7 @@ function block(x, y)
     direction = "right",
     x = x,
     y = y,
-    update = function(self, nextBlock)
-      print("tcay")
-     
+    update = function(self, nextBlock)     
       self.x = nextBlock.x
       self.y = nextBlock.y
       self.direction = nextBlock.direction
@@ -106,130 +100,42 @@ function block(x, y)
   }
 end
 
-function newplayer ()
-  local lastPos = "right"
-  local x, y = 0, 200
-  local tail = 0
-  local playerWidth = x + 30
-  local playerHeight = y
-  local width, height = love.graphics.getDimensions( )
-  return {
-  update = function (dt)
-    local hit = bls.affected(playerWidth, playerHeight)
-    if hit then
-      tail = tail + 10
-      bls = newblip()
-    elseif lastPos == "right" then
-      x = x + 0.5
-      playerWidth = x + 30 + tail
-      playerHeight = y
-      if playerWidth > width then
-        lastPos = "lost"
-      end
-    elseif lastPos == "left" then
-      x = x - 0.5
-      playerWidth = x - 30 - tail
-      playerHeight = y
-      if playerWidth < 0 then
-        lastPos = "lost"
-      end
-    elseif lastPos == "up" then
-      y = y - 0.5
-      playerWidth = x
-      playerHeight = y - 30 - tail
-      if playerHeight < 0 then
-        lastPos = "lost"
-      end
-    elseif lastPos == "down" then
-      y = y + 0.5
-      playerWidth = x
-      playerHeight = y + 30 + tail
-      if playerHeight > height then
-        lastPos = "lost"
-      end
-    end
-  end,
-  draw = function ()
-    love.graphics.line(x, y, playerWidth, playerHeight)
-  end,
-  keypressed = function (key)
-    if key == "down" then
-      if lastPos == "down" or lastPos == "up" then
-        return
-      elseif lastPos == "right" or lastPos == "left" then
-        lastPos = "down"
-      end
-    elseif key == "up" then
-      if lastPos == "down" or lastPos == "up" then
-        return
-      elseif lastPos == "right" or lastPos == "left" then
-        lastPos = "up"
-      end
-    elseif key == "right" then
-      if lastPos == "right" or lastPos == "left" then
-        return
-      elseif lastPos == "down" or lastPos == "up" then
-        lastPos = "right"
-      end
-    elseif key == "left" then
-      if lastPos == "right" or lastPos == "left" then
-        return
-      elseif lastPos == "down" or lastPos == "up" then
-        lastPos = "left"
-      end
-    end
+function testCollision()
+  snakeX, snakeY = snake.getPosition()
+  blsX, blsY = bls.getPosition()
+  
+  if snakeX >= blsX and snakeY >= blsY and snakeX < blsX + 10 and snakeY < blsY + 10  then
+    snake.insertBlock()
+    return true
   end
-  }
+  return false
 end
 
 function love.keypressed(key)
-  -- player.keypressed (key)
+  
   if directions[key] then
     snake.keypressed(key)
   end
 end
 
 function love.load()
-  -- player =  newplayer()
-  -- bls = newblip()
+
+  bls = newblip()
   snake = snake(200, 200)
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
-  snake.insertBlock()
   snake.insertBlock()
 
 end
 
 function love.draw()
-  -- player.draw()
-  -- bls.draw()
+  bls.draw()
   snake.draw()
 end
-time = 0
+
 function love.update(dt)
-  -- player.update(dt)
-  -- bls.update(dt)
+  
   time = time + dt
   snake.update(time)  
-  
+  if testCollision(bls, snake) then
+    bls = newblip()
+  end
 end
