@@ -28,6 +28,9 @@ function snake(x, y)
   local screenWidth, screenHeight = love.graphics.getDimensions()
   local lastUpdate = 0
   return {
+    getScore = function ()
+      return #blocks
+    end,
     getPosition = function()
       return blocks[1].x, blocks[1].y
     end,
@@ -78,9 +81,7 @@ function snake(x, y)
       end
     end,
     insertBlock = function ()
-      print(#blocks)
       local lastBlock = blocks[#blocks]
-      print(lastBlock.direction)
       
       if lastBlock.direction == "right" then
         table.insert(blocks, block(lastBlock.x - 10, lastBlock.y))
@@ -129,8 +130,13 @@ function testSnakeEatBlip()
 end
 
 function gameoverScreen( ... )
+  love.graphics.printf("Game over!", 0, love.graphics.getHeight() / 2 , love.graphics.getWidth(), "center")
+  love.graphics.printf("Score: " .. (snake.getScore() -2) * 10, 0, love.graphics.getHeight() / 2 + 30 , love.graphics.getWidth(), "center")
+end
+
+function drawPoints()
   local screenWidth, screenHeight = love.graphics.getDimensions()
-  love.graphics.print("Game over!", screenWidth / 2 - 100, screenHeight / 2 - 100, 0, 3, 3)
+  love.graphics.printf("Score: " .. (snake.getScore() -2) * 10, 0, 10 , love.graphics.getWidth(), "center")
 end
 
 function love.keypressed(key)
@@ -163,6 +169,7 @@ function love.draw()
   if gameover == false then
     bls.draw()
     snake.draw()
+    drawPoints()
   else
     gameoverScreen()
   end
