@@ -49,7 +49,7 @@ function snake(x, y)
       local b = blocks[1]
       if time < lastUpdate + 0.05 then
         return true
-      elseif b.x + 10 >= screenWidth or b.x -10 <= 0 or b.y + 10 >= screenHeight or b.y -10 <= 0 then
+      elseif b.x + 10 > screenWidth or b.x -10 <= 0 or b.y + 10 > screenHeight or b.y -10 <= 0 then
         return false
       end
 
