@@ -6,6 +6,8 @@ end
 
 directions = Set{"up", "down", "right", "left"}
 time = 0
+gameover = false
+lastKeyPressed = "right"
 
 function newblip ()
   local width, height = love.graphics.getDimensions( )
@@ -29,10 +31,25 @@ function snake(x, y)
     getPosition = function()
       return blocks[1].x, blocks[1].y
     end,
-    update = function(time)
-      if time < lastUpdate + 0.05 then
-        return
+    validatePosition = function ()
+      local b = blocks[1]
+      for i in ipairs(blocks) do
+        if i ~= 1 then
+          if b.x >= blocks[i].x and b.y >= blocks[i].y and b.x < blocks[i].x + 10 and b.y < blocks[i].y + 10  then
+            return false
+          end
+        end
       end
+      return true
+    end,
+    update = function(self, time)
+      local b = blocks[1]
+      if time < lastUpdate + 0.05 then
+        return true
+      elseif b.x + 10 >= screenWidth or b.x -10 <= 0 or b.y + 10 >= screenHeight or b.y -10 <= 0 then
+        return false
+      end
+
       lastUpdate = time
       for i in ipairs(blocks) do
         i = #blocks - i + 1
@@ -42,7 +59,6 @@ function snake(x, y)
         end
       end
 
-      local b = blocks[1]
       if b.direction == "right" then
         b.x = b.x + 10
       elseif b.direction == "left" then
@@ -53,6 +69,7 @@ function snake(x, y)
         b.y = b.y + 10
       end
 
+      return self.validatePosition()
     end,
     draw = function ()
       for i in ipairs(blocks) do
@@ -100,19 +117,35 @@ function block(x, y)
   }
 end
 
-function testCollision()
+function testSnakeEatBlip()
   snakeX, snakeY = snake.getPosition()
   blsX, blsY = bls.getPosition()
   
   if snakeX >= blsX and snakeY >= blsY and snakeX < blsX + 10 and snakeY < blsY + 10  then
     snake.insertBlock()
-    return true
+    bls = newblip()
   end
-  return false
+  
+end
+
+function gameoverScreen( ... )
+  local screenWidth, screenHeight = love.graphics.getDimensions()
+  love.graphics.print("Game over!", screenWidth / 2 - 100, screenHeight / 2 - 100, 0, 3, 3)
 end
 
 function love.keypressed(key)
-  
+  if key == "down" or key == "up" then
+    if lastKeyPressed == "down" or lastKeyPressed == "up" then
+      lastKeyPressed = key
+      return
+    end
+  elseif key == "right" or key == "left" then
+    if lastKeyPressed == "right" or lastKeyPressed == "left" then
+      lastKeyPressed = key
+      return  
+    end
+  end
+  lastKeyPressed = key
   if directions[key] then
     snake.keypressed(key)
   end
@@ -127,15 +160,21 @@ function love.load()
 end
 
 function love.draw()
-  bls.draw()
-  snake.draw()
+  if gameover == false then
+    bls.draw()
+    snake.draw()
+  else
+    gameoverScreen()
+  end
 end
 
 function love.update(dt)
   
-  time = time + dt
-  snake.update(time)  
-  if testCollision(bls, snake) then
-    bls = newblip()
-  end
+  if gameover == false then
+    time = time + dt
+    if snake:update(time) == false then
+      gameover = true
+    end
+    testSnakeEatBlip(bls, snake)
+  end  
 end
