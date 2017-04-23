@@ -92,8 +92,10 @@ function snake(x, y)
       local r, g, b = bls.getRGB()
 
       if #blocks == 1 then
-        table.insert(blocks, block(lastBlock.x - 10, lastBlock.y, love.math.random(255), love.math.random(255), love.math.random(255)))
-      elseif lastBlock.direction == "right" then
+        r, g, b = love.math.random(255), love.math.random(255), love.math.random(255)
+      end
+
+      if lastBlock.direction == "right" then
         table.insert(blocks, block(lastBlock.x - 10, lastBlock.y, r, g, b))
       elseif lastBlock.direction == "left" then
         table.insert(blocks, block(lastBlock.x + 10, lastBlock.y, r, g, b))
