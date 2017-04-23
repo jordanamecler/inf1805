@@ -37,6 +37,8 @@ function snake(x, y)
       local b = blocks[1]
       for i in ipairs(blocks) do
         if i ~= 1 then
+          print(b.x)
+          print(b.y)
           if b.x >= blocks[i].x and b.y >= blocks[i].y and b.x < blocks[i].x + 10 and b.y < blocks[i].y + 10  then
             return false
           end
@@ -48,7 +50,7 @@ function snake(x, y)
       local b = blocks[1]
       if time < lastUpdate + 0.05 then
         return true
-      elseif b.x + 10 > screenWidth or b.x -10 < 0 or b.y + 10 > screenHeight or b.y -10 < 0 then
+      elseif b.x + 10 > screenWidth or b.x < 0 or b.y + 10 > screenHeight or b.y < 0 then
         return false
       end
 
