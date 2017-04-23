@@ -12,18 +12,24 @@ lastKeyPressed = "right"
 function newblip ()
   local width, height = love.graphics.getDimensions( )
   local x, y = love.math.random(width /10 - 1) * 10, love.math.random(height/10 - 1) * 10
+  local r, g, b = love.math.random(255), love.math.random(255), love.math.random(255)
+
   return {
     getPosition = function ()
       return x, y
     end,
+    getRGB = function ()
+      return r, g, b
+    end,
     draw = function ()
-      love.graphics.rectangle("line", x, y, 10, 10)
+      love.graphics.setColor(r, g, b, 255)
+      love.graphics.rectangle("fill", x, y, 10, 10)
     end
   }
 end
 
 function snake(x, y)
-  local blocks = { block(x, y) }
+  local blocks = { block(x, y, love.math.random(255), love.math.random(255), love.math.random(255)) }
   local screenWidth, screenHeight = love.graphics.getDimensions()
   local lastUpdate = 0
   return {
@@ -83,15 +89,18 @@ function snake(x, y)
     end,
     insertBlock = function ()
       local lastBlock = blocks[#blocks]
-      
-      if lastBlock.direction == "right" then
-        table.insert(blocks, block(lastBlock.x - 10, lastBlock.y))
+      local r, g, b = bls.getRGB()
+
+      if #blocks == 1 then
+        table.insert(blocks, block(lastBlock.x - 10, lastBlock.y, love.math.random(255), love.math.random(255), love.math.random(255)))
+      elseif lastBlock.direction == "right" then
+        table.insert(blocks, block(lastBlock.x - 10, lastBlock.y, r, g, b))
       elseif lastBlock.direction == "left" then
-        table.insert(blocks, block(lastBlock.x + 10, lastBlock.y))
+        table.insert(blocks, block(lastBlock.x + 10, lastBlock.y, r, g, b))
       elseif lastBlock.direction == "up" then  
-        table.insert(blocks, block(lastBlock.x, lastBlock.y + 10))
+        table.insert(blocks, block(lastBlock.x, lastBlock.y + 10, r, g, b))
       elseif lastBlock.direction == "down" then
-        table.insert(blocks, block(lastBlock.x, lastBlock.y - 10))
+        table.insert(blocks, block(lastBlock.x, lastBlock.y - 10, r, g, b))
       end
     end,
     keypressed = function (key)
@@ -100,10 +109,10 @@ function snake(x, y)
   } 
 end
 
-function block(x, y)
+function block(x, y, r, g, b)
   local width, height = 10, 10
   local screenWidth, screenHeight = love.graphics.getDimensions()
-
+  local r, g, b = r, g, b
   return {
     direction = "right",
     x = x,
@@ -114,6 +123,7 @@ function block(x, y)
       self.direction = nextBlock.direction
     end,
     draw = function (self)
+      love.graphics.setColor(r, g, b, 255)
       love.graphics.rectangle("fill", self.x, self.y, width, height)
     end
   }
@@ -137,6 +147,7 @@ end
 
 function drawPoints()
   local screenWidth, screenHeight = love.graphics.getDimensions()
+  love.graphics.setColor(255, 255, 255, 255)
   love.graphics.printf("Score: " .. (snake.getScore() -2) * 10, 0, 10 , love.graphics.getWidth(), "center")
 end
 
