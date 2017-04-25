@@ -43,8 +43,6 @@ function snake(x, y)
       local b = blocks[1]
       for i in ipairs(blocks) do
         if i ~= 1 then
-          print(b.x)
-          print(b.y)
           if b.x >= blocks[i].x and b.y >= blocks[i].y and b.x < blocks[i].x + 10 and b.y < blocks[i].y + 10  then
             return false
           end
