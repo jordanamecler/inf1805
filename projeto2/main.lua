@@ -6,6 +6,7 @@ end
 
 directions = Set{"up", "down", "right", "left"}
 time = 0
+blipUpdate = 0
 gameover = false
 lastKeyPressed = "right"
 
@@ -13,7 +14,7 @@ function newblip ()
   local width, height = love.graphics.getDimensions( )
   local x, y = love.math.random(width /10 - 1) * 10, love.math.random(height/10 - 1) * 10
   local r, g, b = love.math.random(255), love.math.random(255), love.math.random(255)
-
+  
   return {
     getPosition = function ()
       return x, y
@@ -21,6 +22,16 @@ function newblip ()
     getRGB = function ()
       return r, g, b
     end,
+	changeBlip = function ()
+		x, y = love.math.random(width /10 - 1) * 10, love.math.random(height/10 - 1) * 10
+		r, g, b = love.math.random(255), love.math.random(255), love.math.random(255)
+	end,
+	update = coroutine.wrap ( function (self)
+		while true 	do
+		  self.changeBlip()
+		  coroutine.yield()
+		end
+	end),
     draw = function ()
       love.graphics.setColor(r, g, b, 255)
       love.graphics.rectangle("fill", x, y, 10, 10)
@@ -39,19 +50,15 @@ function snake(x, y)
     getPosition = function()
       return blocks[1].x, blocks[1].y
     end,
-    validatePosition = function ()
-      local b = blocks[1]
-      for i in ipairs(blocks) do
-        if i ~= 1 then
-          if b.x >= blocks[i].x and b.y >= blocks[i].y and b.x < blocks[i].x + 10 and b.y < blocks[i].y + 10  then
-            return false
-          end
-        end
+    validatePosition = function (x, y, i)
+      if x >= blocks[i].x and y >= blocks[i].y and x < blocks[i].x + 10 and y < blocks[i].y + 10  then
+		return false
       end
       return true
     end,
     update = function(self, time)
       local b = blocks[1]
+	  local x, y = blocks[1].x, blocks[1].y
       if time < lastUpdate + 0.05 then
         return true
       elseif b.x + 10 > screenWidth or b.x < 0 or b.y + 10 > screenHeight or b.y < 0 then
@@ -59,25 +66,32 @@ function snake(x, y)
       end
 
       lastUpdate = time
+	  
+	  if b.direction == "right" then
+        x = x + 10
+      elseif b.direction == "left" then
+		x = x - 10
+      elseif b.direction == "up" then  
+        y = y - 10
+      elseif b.direction == "down" then
+        y = y + 10
+      end
+	  
       for i in ipairs(blocks) do
         i = #blocks - i + 1
         if i ~= 1 then
           local b = blocks[i]
           b:update(blocks[i - 1])
+		  if self.validatePosition(x, y, i) == false then
+			return false
+		  end
         end
       end
-
-      if b.direction == "right" then
-        b.x = b.x + 10
-      elseif b.direction == "left" then
-        b.x = b.x - 10
-      elseif b.direction == "up" then  
-        b.y = b.y - 10
-      elseif b.direction == "down" then
-        b.y = b.y + 10
-      end
-
-      return self.validatePosition()
+	  
+	  b.x = x
+	  b.y = y
+	  
+	  return true
     end,
     draw = function ()
       for i in ipairs(blocks) do
@@ -135,7 +149,7 @@ function testSnakeEatBlip()
   
   if snakeX >= blsX and snakeY >= blsY and snakeX < blsX + 10 and snakeY < blsY + 10  then
     snake.insertBlock()
-    bls = newblip()
+    bls.changeBlip()
   end
   
 end
@@ -191,6 +205,10 @@ function love.update(dt)
   
   if gameover == false then
     time = time + dt
+	if time > blipUpdate + 10 then
+	  bls:update()
+	  blipUpdate = time
+	end	
     if snake:update(time) == false then
       gameover = true
     end
