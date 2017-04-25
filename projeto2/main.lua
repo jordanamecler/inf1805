@@ -150,8 +150,9 @@ function testSnakeEatBlip()
   if snakeX >= blsX and snakeY >= blsY and snakeX < blsX + 10 and snakeY < blsY + 10  then
     snake.insertBlock()
     bls.changeBlip()
+	return true
   end
-  
+  return false
 end
 
 function gameoverScreen( ... )
@@ -212,6 +213,8 @@ function love.update(dt)
     if snake:update(time) == false then
       gameover = true
     end
-    testSnakeEatBlip(bls, snake)
+    if testSnakeEatBlip(bls, snake) then
+		blipUpdate = time
+	end
   end  
 end
