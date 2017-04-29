@@ -6,34 +6,34 @@ function Set (list)
   return set
 end
 
-directions = Set{"up", "down", "right", "left"}
-
-function drawScore(score)
-  local screenWidth, screenHeight = love.graphics.getDimensions()
-  love.graphics.setColor(255, 255, 255, 255)
-  love.graphics.printf("Score: " .. (score -2) * 10, 0, 10 , love.graphics.getWidth(), "center")
-end
-
-function gameoverScreen(score)
-  love.graphics.printf("Game over!", 0, love.graphics.getHeight() / 2 , love.graphics.getWidth(), "center")
-  love.graphics.printf("Score: " .. (score -2) * 10, 0, love.graphics.getHeight() / 2 + 30 , love.graphics.getWidth(), "center")
-  love.graphics.printf("Press any key to restart...", 0, love.graphics.getHeight() / 1.3 + 30 , love.graphics.getWidth(), "center")
-end
-
-function testSnakeEatBlip(bls, snake)
-  snakeX, snakeY = snake.getPosition()
-  blsX, blsY = bls.getPosition()
-  
-  if snakeX >= blsX and snakeY >= blsY and snakeX < blsX + 10 and snakeY < blsY + 10  then
-    snake.insertBlock(bls)
-    bls.changeBlip()
-	return true
-  end
-  return false
-end
-
 return {
 	new = function ()
+
+		local directions = Set{"up", "down", "right", "left"}
+		
+		local drawScore = function (score)
+		  local screenWidth, screenHeight = love.graphics.getDimensions()
+		  love.graphics.setColor(255, 255, 255, 255)
+		  love.graphics.printf("Score: " .. (score -2) * 10, 0, 10 , love.graphics.getWidth(), "center")
+		end
+
+		local gameoverScreen = function (score)
+		  love.graphics.printf("Game over!", 0, love.graphics.getHeight() / 2 , love.graphics.getWidth(), "center")
+		  love.graphics.printf("Score: " .. (score -2) * 10, 0, love.graphics.getHeight() / 2 + 30 , love.graphics.getWidth(), "center")
+		  love.graphics.printf("Press any key to restart...", 0, love.graphics.getHeight() / 1.3 + 30 , love.graphics.getWidth(), "center")
+		end
+
+		local testSnakeEatBlip = function (bls, snake)
+		  snakeX, snakeY = snake.getPosition()
+		  blsX, blsY = bls.getPosition()
+		  
+		  if snakeX >= blsX and snakeY >= blsY and snakeX < blsX + 10 and snakeY < blsY + 10  then
+		    snake.insertBlock(bls)
+		    bls.changeBlip()
+			return true
+		  end
+		  return false
+		end
 
 		local time = 0
 		local gameover = false

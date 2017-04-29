@@ -15,32 +15,35 @@ directionsMap = {
 	d = "right"
 }
 
-function drawScore(score)
-  local screenWidth, screenHeight = love.graphics.getDimensions()
-  love.graphics.setColor(255, 255, 255, 255)
-  love.graphics.printf("Score: " .. (score -2) * 10, 0, 10 , love.graphics.getWidth(), "center")
-end
-
-function gameoverScreen(score)
-  love.graphics.printf("Game over!", 0, love.graphics.getHeight() / 2 , love.graphics.getWidth(), "center")
-  love.graphics.printf("Score: " .. (score -2) * 10, 0, love.graphics.getHeight() / 2 + 30 , love.graphics.getWidth(), "center")
-  love.graphics.printf("Press any key to restart...", 0, love.graphics.getHeight() / 1.3 + 30 , love.graphics.getWidth(), "center")
-end
-
-function testSnakeEatBlip(bls, snake)
-  snakeX, snakeY = snake.getPosition()
-  blsX, blsY = bls.getPosition()
-  
-  if snakeX >= blsX and snakeY >= blsY and snakeX < blsX + 10 and snakeY < blsY + 10  then
-    snake.insertBlock(bls)
-    bls.changeBlip()
-	return true
-  end
-  return false
-end
-
 return {
 	new = function ()
+
+		local drawScore = function (score1, score2)
+		  local screenWidth, screenHeight = love.graphics.getDimensions()
+		  love.graphics.setColor(255, 255, 255, 255)
+		  love.graphics.printf("Player 1:  " .. (score1 -2) * 10, -100, 10 , love.graphics.getWidth(), "center")
+		  love.graphics.printf("Player 2:  " .. (score2 -2) * 10, 100, 10 , love.graphics.getWidth(), "center")
+		end
+
+		local gameoverScreen = function (score1, score2)
+		  love.graphics.printf("Game over!", 0, love.graphics.getHeight() / 3 , love.graphics.getWidth(), "center")
+		  love.graphics.printf("Player 1:  " .. (score1 -2) * 10, -100, love.graphics.getHeight() / 2.5  , love.graphics.getWidth(), "center")
+		  love.graphics.printf("Player 2:  " .. (score2 -2) * 10, 100, love.graphics.getHeight() / 2.5  , love.graphics.getWidth(), "center")
+		  love.graphics.printf("Press any key to restart...", 0, love.graphics.getHeight() / 1.3  , love.graphics.getWidth(), "center")
+		end
+
+		local testSnakeEatBlip = function (bls, snake)
+		  snakeX, snakeY = snake.getPosition()
+		  blsX, blsY = bls.getPosition()
+		  
+		  if snakeX >= blsX and snakeY >= blsY and snakeX < blsX + 10 and snakeY < blsY + 10  then
+		    snake.insertBlock(bls)
+		    bls.changeBlip()
+			return true
+		  end
+		  return false
+		end
+
 
 		local time = 0
 		local gameover = false
@@ -85,9 +88,9 @@ return {
 				  bls.draw()
 				  snake1.draw()
 				  snake2.draw()
-				  drawScore(snake1.getScore() + snake2.getScore())
+				  drawScore(snake1.getScore(), snake2.getScore())
 				else
-				  gameoverScreen(snake1.getScore() + snake2.getScore())
+				  gameoverScreen(snake1.getScore(), snake2.getScore())
 				end
 			end,
 			keypressed = function (self, key)

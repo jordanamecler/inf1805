@@ -8,7 +8,7 @@ gameState = "menu"
 
 local screenWidth, screenHeight = love.graphics.getDimensions()
 
-function drawTitle( ... )
+function drawTitle()
   love.graphics.printf("Snake Online\nThe game", 0, love.graphics.getHeight() / 4 , love.graphics.getWidth() , "center")
 end
 
