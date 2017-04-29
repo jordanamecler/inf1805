@@ -1,8 +1,10 @@
 local Menu = require("menu")
 local Game = require("game")
+local MultiplayerGame = require("multiplayer_game")
+local About = require("about")
 
 gameState = "menu"
--- menu - singleplayer - multiplayer - gameover
+-- menu - singleplayer - multiplayer - about
 
 local screenWidth, screenHeight = love.graphics.getDimensions()
 
@@ -13,9 +15,13 @@ end
 function love.keypressed(key)
   if gameState == "menu" then
     menu:keypressed(key)
-  elseif gameState == "game" then
+  elseif gameState == "game" or gameState == "multiplayer" then
     if game then
       game:keypressed(key)
+    end
+  elseif gameState == "about" then
+    if about then
+      about:keypressed(key)
     end
   end
 end
@@ -33,13 +39,15 @@ function love.load()
   menu:addItem{
     name = 'Multiplayer',
     action = function()
-      -- do something
+      game = MultiplayerGame.new()
+      gameState = "multiplayer"
     end
   }
   menu:addItem{
-    name = 'Quit',
+    name = 'About',
     action = function()
-      -- love.event.push('q')
+      about = About.new()
+      gameState = "about"
     end
   }
 
@@ -49,9 +57,13 @@ function love.draw()
   if gameState == "menu" then
     drawTitle()
     menu:draw(screenWidth / 2 - 150, screenHeight / 2 - 20)
-  elseif gameState == "game" then
+  elseif gameState == "game" or gameState == "multiplayer" then
     if game then
         game:draw()
+    end
+  elseif gameState == "about" then
+    if about then
+      about:draw()
     end
   end
 end
@@ -60,13 +72,22 @@ function love.update(dt)
 
   if gameState == "menu" then
     menu:update(dt)
-  elseif gameState == "game" then
+  elseif gameState == "game" or gameState == "multiplayer" then
     if game then
       restart = game:update(dt)
-      if restart == true then
-        game = Game.new()
+      if restart then
+        game = nil
+        gameState = "menu"
       end
     end
+  elseif gameState == "about" then
+    if about then
+      goback = about:update(dt)
+      if goback then
+        about = nil
+        gameState = "menu"
+      end
+    end  
   end
 
 end
