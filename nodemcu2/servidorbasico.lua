@@ -15,7 +15,39 @@ gpio.mode(button2, gpio.INT, gpio.PULLUP)
 gpio.write(led1, gpio.LOW);
 gpio.write(led2, gpio.LOW);
 
-gpio.trig(button1, "both", function(level) gpio.write(led1, level) end)
+speed = 1000
+
+temp = tmr.create()
+temp:register(speed, tmr.ALARM_AUTO,
+			function (t)
+			  if (gpio.read(led1) == gpio.HIGH) then gpio.write(led1, gpio.LOW)
+			  else gpio.write(led1, gpio.HIGH)
+			  end
+			end)
+temp:start()
+
+gpio.trig(button1, "down", function(level)
+			 speed = speed*1.1
+			 temp:stop()
+			 temp:register(speed, tmr.ALARM_AUTO,
+			function (t)
+			  if (gpio.read(led1) == gpio.HIGH) then gpio.write(led1, gpio.LOW)
+			  else gpio.write(led1, gpio.HIGH)
+			  end
+			end)
+			 temp:start()
+			 end)
+gpio.trig(button2, "down", function(level)
+			 speed = speed/1.1
+			 temp:stop()
+			 temp:register(speed, tmr.ALARM_AUTO,
+			function (t)
+			  if (gpio.read(led1) == gpio.HIGH) then gpio.write(led1, gpio.LOW)
+			  else gpio.write(led1, gpio.HIGH)
+			  end
+			end)
+			 temp:start()
+			 end)
 
 local led={}
 led[0]="OFF"
