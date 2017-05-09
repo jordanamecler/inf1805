@@ -16,6 +16,9 @@ gpio.write(led1, gpio.LOW);
 gpio.write(led2, gpio.LOW);
 
 speed = 1000
+tempo1 = -1
+tempo2 = -1
+parou = false
 
 temp = tmr.create()
 temp:register(speed, tmr.ALARM_AUTO,
@@ -27,27 +30,33 @@ temp:register(speed, tmr.ALARM_AUTO,
 temp:start()
 
 gpio.trig(button1, "down", function(level)
-			 speed = speed*1.1
-			 temp:stop()
-			 temp:register(speed, tmr.ALARM_AUTO,
-			function (t)
-			  if (gpio.read(led1) == gpio.HIGH) then gpio.write(led1, gpio.LOW)
-			  else gpio.write(led1, gpio.HIGH)
-			  end
+			 if (parou == false) then
+				 if (tempo1 ~= -1 and tmr.now() - tempo2 < 1000) then
+				    temp:stop()
+				    print("dois botoes ao mesmo tempo")
+				    parou = true
+				 else
+				    tempo1 = tmr.now()
+				    speed = speed*1.1
+				    temp:interval(speed)
+				 end
+			 end
 			end)
-			 temp:start()
-			 end)
+			 
 gpio.trig(button2, "down", function(level)
-			 speed = speed/1.1
-			 temp:stop()
-			 temp:register(speed, tmr.ALARM_AUTO,
-			function (t)
-			  if (gpio.read(led1) == gpio.HIGH) then gpio.write(led1, gpio.LOW)
-			  else gpio.write(led1, gpio.HIGH)
-			  end
+			 if (parou == false) then
+				 if (tempo2 ~= -1 and tmr.now() - tempo1 < 1000) then
+				    temp:stop()
+				    print("dois botoes ao mesmo tempo")
+				    parou = true
+				 else
+				    tempo2 = tmr.now()
+				    speed = speed/1.1
+				    temp:interval(speed)
+				 end
+			 end
 			end)
-			 temp:start()
-			 end)
+			 
 
 local led={}
 led[0]="OFF"
