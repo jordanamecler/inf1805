@@ -2,14 +2,20 @@ led1 = 3
 led2 = 6
 sw1 = 1
 sw2 = 2
+button1 = 1
+button2 = 2
 
 gpio.mode(led1, gpio.OUTPUT)
 gpio.mode(led2, gpio.OUTPUT)
 gpio.mode(sw1, gpio.INPUT)
 gpio.mode(sw2, gpio.INPUT)
+gpio.mode(button1, gpio.INT, gpio.PULLUP)
+gpio.mode(button2, gpio.INT, gpio.PULLUP)
 
 gpio.write(led1, gpio.LOW);
 gpio.write(led2, gpio.LOW);
+
+gpio.trig(button1, "both", function(level) gpio.write(led1, level) end)
 
 local led={}
 led[0]="OFF"
@@ -58,11 +64,11 @@ local function readtemp()
 end
 
 local actions = {
-  LERTEMP = readtemp,
-  LIGA1 = ledsArray[1].blink,
-  DESLIGA1 = ledsArray[1].stop,
-  LIGA2 = ledsArray[2].blink,
-  DESLIGA2 = ledsArray[2].stop,
+  --LERTEMP = readtemp,
+  --LIGA1 = ledsArray[1].blink,
+  --DESLIGA1 = ledsArray[1].stop,
+  --LIGA2 = ledsArray[2].blink,
+  --DESLIGA2 = ledsArray[2].stop,
 }
 
 srv = net.createServer(net.TCP)
