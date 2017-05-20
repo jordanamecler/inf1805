@@ -32,9 +32,12 @@ local status={}
 sw[1]="Comecou"
 sw[0]="Terminou"
 
+function home_view()
+
 local urls = {
   home = nil,
   start = nil,
+  finished = nil,
   stop = nil,
   score = nil,
 }
