@@ -37,7 +37,7 @@ local function createTest()
 
                 <p>
             </div>
-            ]]
+        ]]
 end
 
 local function startTest()
@@ -87,26 +87,44 @@ srv = net.createServer(net.TCP)
 function receiver(sck, request)
 
   -- analisa pedido para encontrar valores enviados
-  local _, _, method, path, vars = string.find(request, "([A-Z]+) ([^?]+)%?([^ ]+) HTTP");
+  local _, _, method, path, vars = string.find(request, "([A-Z]+) ([^?]+)%?([^ ]+) HTTP")
+
   -- se nÃ£o conseguiu casar, tenta sem variaveis
-  if(method == nil)then
-    _, _, method, path = string.find(request, "([A-Z]+) (.+) HTTP");
+  if(method == nil) then
+    _, _, method, path = string.find(request, "([A-Z]+) (.+) HTTP")
   end
-  
+
   local _GET = {}
+  local _POST = {}
   
-  if (vars ~= nil)then
-    print(vars)
-    for k, v in string.gmatch(vars, "(%w+)=(%w+)&*") do
-      _GET[k] = v
+  if(method == "POST") then
+    for k, v in string.gmatch(request, "question(%d+)=([^&]+)") do
+      print(v)
+      if(v ~= nil) then
+        table.insert(questions, v)
+      end
+    end
+    for k, v in string.gmatch(request, "answer(%d+)=([^&]+)") do
+      print(v)
+      if(v ~= nil) then
+        table.insert(answers, v)
+      end
+    end
+  elseif(method == "GET") then
+    if (vars ~= nil)then
+      for k, v in string.gmatch(vars, "(%w+)=(%w+)&*") do
+        print(v)
+        _GET[k] = v
+      end
     end
   end
 
   buf = [[
-  <a href="?pin=CREATETEST"><button><b>Create Test</b></button></a>
-  ]]
+          <a href="?pin=CREATETEST"><button><b>Create Test</b></button></a>
+        ]]
 
   local action = actions[_GET.pin]
+  print(_GET.pin)
   if action then action() end
 
   local vals = {
