@@ -8,6 +8,17 @@ led[1]="OFF"
 local questions={}
 local answers={}
 
+local function readData(request)
+  local dataDict = {}
+  if (request ~= nil)then
+    print(request)
+    for k, v in string.gmatch(vars, "(%w+)=(%w+)&*") do
+      dataDict[k] = v
+    end
+  end
+  return dataDict
+end
+
 local function createTest()
   buf = [[
               <div style="width: 40%; margin: 0 auto;">
@@ -93,20 +104,13 @@ function receiver(sck, request)
     _, _, method, path = string.find(request, "([A-Z]+) (.+) HTTP");
   end
   
-  local _GET = {}
-  
-  if (vars ~= nil)then
-    print(vars)
-    for k, v in string.gmatch(vars, "(%w+)=(%w+)&*") do
-      _GET[k] = v
-    end
-  end
+  local _data = readData(request)
 
   buf = [[
   <a href="?pin=CREATETEST"><button><b>Create Test</b></button></a>
   ]]
 
-  local action = actions[_GET.pin]
+  local action = actions[_data.pin]
   if action then action() end
 
   local vals = {
