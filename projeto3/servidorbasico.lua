@@ -10,17 +10,25 @@ questions={}
 answers={}
 correctanswers={}
 
-buf = [[
-          <a href="?pin=CREATETEST"><button><b>Create Test</b></button></a>
-      ]]
+totalAnswers = 0
+results = {
+	a = 0,
+	b = 0,
+	c = 0
+}
+
+estadoAplicacao = "espera"
+-- espera / teste / resultado
+
+buf = [[]]
 
 local function createTest()
-  buf = [[
+  return [[
               <div style="width: 40%; margin: 0 auto;">
                 <h1><u>Test time</u></h1>
                 <h3>Write your questions and answers!</h3>
                 
-                <form method="POST" action="STARTTEST">
+                <form method="POST" action="/start">
                   <p>Test's title: <input sytle="width:300px" type="text" name="title" required/></p>
 
                   <p>1) Pergunta:<input style="width:600px" type="text" name="question1" pattern=".{1,}" required/></p>
@@ -47,14 +55,14 @@ local function createTest()
 end
 
 local function startTest()
-  buf = [[
+  return [[
           <div style="width: 40%; margin: 0 auto;">
             <h1><u>Test time</u></h1>
             <h3>Answer the following questions</h3>
 
             <h4> $TITLE </h4>
             
-            <form method="POST" action="RESULTS">
+            <form method="POST" action="/finish">
               <p>1) Question: $QUESTION1</p>
 
               <input type="radio" name="answer1" value="$ANSWER11" required> $ANSWER11
@@ -84,7 +92,7 @@ local function startTest()
 end
 
 local function finishTest()
-  buf = [[
+  return [[
           <div style="width: 40%; margin: 0 auto;">
             <h1><u>Results</u></h1>
             <h3>Check your results</h3>
@@ -108,9 +116,6 @@ local function finishTest()
         ]]
 end
 
-local actions = {
-  CREATETEST = createTest,
-}
 
 srv = net.createServer(net.TCP)
 
@@ -127,29 +132,43 @@ function receiver(sck, request)
   local _GET = {}
   local _POST = {}
 
-  if(method == "POST") then
-    for k, v in string.gmatch(request, "title=([^&]+)") do
-      if(v ~= nil) then
-        print("titulo aqui")
-        v = string.gsub(v, "+", " ")
-        table.insert(title, v)
-      end
-    end
-    for k, v in string.gmatch(request, "question(%d+)=([^&]+)") do
-      if(v ~= nil) then
-        v = string.gsub(v, "+", " ")
-        table.insert(questions, v)
-      end
-    end
-    for k, v in string.gmatch(request, "answer(%d+)=([^&]+)") do
-      if(v ~= nil) then
-        v = string.gsub(v, "+", " ")
-        if v == "a11" or v == "a12" or v == "a13" or v == "a21" or v == "a22" or v == "a23" or v == "a31" or v == "a32" or v == "a33" then table.insert(correctanswers, v)
-        else table.insert(answers, v) end
-      end
-    end
-    
-    if correctanswers[1] == "a11" then correctanswers[1] = answers[1]
+	path = path:lower()
+
+	local vals = {}
+
+  if (path == "" or path == "/") then
+		buf = [[
+          <a href="/home"><button><b>Create Test</b></button></a>
+      ]]
+	
+  elseif (path == "/home") then
+		
+		buf = createTest()
+		
+	elseif (path == "/start" and method == "POST") then
+		
+		for k, v in string.gmatch(request, "title=([^&]+)") do
+	    if(v ~= nil) then
+	      print("titulo aqui")
+	      v = string.gsub(v, "+", " ")
+	      table.insert(title, v)
+	    end
+	  end
+	  for k, v in string.gmatch(request, "question(%d+)=([^&]+)") do
+	    if(v ~= nil) then
+	      v = string.gsub(v, "+", " ")
+	      table.insert(questions, v)
+	    end
+	  end
+	  for k, v in string.gmatch(request, "answer(%d+)=([^&]+)") do
+	    if(v ~= nil) then
+	      v = string.gsub(v, "+", " ")
+	      if v == "a11" or v == "a12" or v == "a13" or v == "a21" or v == "a22" or v == "a23" or v == "a31" or v == "a32" or v == "a33" then table.insert(correctanswers, v)
+	      else table.insert(answers, v) end
+	    end
+	  end
+		
+		if correctanswers[1] == "a11" then correctanswers[1] = answers[1]
     elseif correctanswers[1] == "a12" then correctanswers[1] = answers[2]
     elseif correctanswers[1] == "a13" then correctanswers[1] = answers[3] end
 
@@ -161,46 +180,92 @@ function receiver(sck, request)
     elseif correctanswers[3] == "a32" then correctanswers[3] = answers[8]
     elseif correctanswers[3] == "a33" then correctanswers[3] = answers[9] end
 
-    if(path == "/RESULTS") then
-      finishTest()
-    else
-      startTest()
-    end
+		buf = "Teste criado, entre em /test para realizar o teste."
 
-  elseif(method == "GET") then
-    if (vars ~= nil)then
-      for k, v in string.gmatch(vars, "(%w+)=(%w+)&*") do
-        _GET[k] = v
-      end
-    end
+	elseif (path == "/test") then
+			vals = {
+				QUESTION1 = questions[1],
+				ANSWER11 = answers[1],
+				ANSWER12 = answers[2],
+				ANSWER13 = answers[3],
+				QUESTION2 = questions[2],
+				ANSWER21 = answers[4],
+				ANSWER22 = answers[5],
+				ANSWER23 = answers[6],
+				QUESTION3 = questions[3],
+				ANSWER31 = answers[7],
+				ANSWER32 = answers[8],
+				ANSWER33 = answers[9],
+				CORRECTANSWER1 = correctanswers[1],
+				CORRECTANSWER2 = correctanswers[2],
+				CORRECTANSWER3 = correctanswers[3],
+				TITLE = title[1]
+			}
+			buf = startTest()
 
-    local action = actions[_GET.pin]
-    if action then action() end
+	elseif (path == "/stop") then
 
-  end
+	elseif (path == "/finish") then
+	
+		local studentAnswers = {}
+
+	  for k, v in string.gmatch(request, "answer(%d+)=([^&]+)") do
+	    if(v ~= nil) then
+	      v = string.gsub(v, "+", " ")
+	      table.insert(studentAnswers, v)
+	    end
+	  end
+		
+		totalAnswers = totalAnswers + 1
+
+		vals = {
+			QUESTION1 = questions[1],
+			QUESTION2 = questions[2],
+			QUESTION3 = questions[3],
+			CORRECTANSWER1 = correctanswers[1],
+			CORRECTANSWER2 = correctanswers[2],
+			CORRECTANSWER3 = correctanswers[3],
+			TITLE = title[1],
+			ANSWER1 = studentAnswers[1],
+			ANSWER2 = studentAnswers[2],
+			ANSWER3 = studentAnswers[3]
+		}
+
+		if studentAnswers[1] == correctanswers[1] then
+			results.a = results.a + 1
+		elseif studentAnswers[2] == correctanswers[2] then
+			results.b = results.b + 1
+		elseif studentAnswers[3] == correctanswers[3] then
+			results.c = results.c + 1
+		end
+		buf = finishTest()
+
+	elseif (path == "/results") then
+
+		vals = {
+			QUESTION1 = questions[1],
+			QUESTION2 = questions[2],
+			QUESTION3 = questions[3],
+			TITLE = title[1],
+			RESULTSA = results.a,
+			RESULTSB = results.b,
+			RESULTSC = results.c,
+			TOTAL = totalAnswers
+		}
+	
+		buf = [[
+						<p>1)$QUESTION1: </p>
+						<p>Acertos: $RESULTSA</p>
+						<p>2)$QUESTION2:</p>
+						<p>Acertos: $RESULTSB</p>
+						<p>3)$QUESTION3:</p> 
+						<p>Acertos: $RESULTSC</p>
+						<p>Total de respostas: $TOTAL </p>
+			]]
+
+	end
 
   print(request)
-  local vals = {
-    QUESTION1 = questions[1],
-    ANSWER11 = answers[1],
-    ANSWER12 = answers[2],
-    ANSWER13 = answers[3],
-    QUESTION2 = questions[2],
-    ANSWER21 = answers[4],
-    ANSWER22 = answers[5],
-    ANSWER23 = answers[6],
-    QUESTION3 = questions[3],
-    ANSWER31 = answers[7],
-    ANSWER32 = answers[8],
-    ANSWER33 = answers[9],
-    ANSWER1 = answers[10],
-    ANSWER2 = answers[11],
-    ANSWER3 = answers[12],
-    CORRECTANSWER1 = correctanswers[1],
-    CORRECTANSWER2 = correctanswers[2],
-    CORRECTANSWER3 = correctanswers[3],
-    TITLE = title[1]
-  }
 
   buf = string.gsub(buf, "$(%w+)", vals)
   sck:send(buf, function() print("respondeu") sck:close() end)

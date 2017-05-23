@@ -1,31 +1,31 @@
 <div style="width: 40%; margin: 0 auto;">
-	<h1><u>Kahoot but better</u></h1>
-	<h3>On ur marks, ready, steady, 1, 2, 3, jacareh, jabuti, go!!1! </h3>
+            <h1><u>Test time</u></h1>
+            <h3>Answer the following questions</h3>
 
-	<h4>Test title</h4>
-	
-	<form method="POST" action="finished">
-		<p>1) Pergunta: $QUESTION1</p>
+            <h4> $TITLE </h4>
+            
+            <form method="POST" action="RESULTS">
+              <p>1) Question: $QUESTION1</p>
 
-		<input type="radio" name="answer1" value="$ANSWER11"> Resposta A 
-		<input type="radio" name="answer1" value="$ANSWER12"> Resposta B
-		<input type="radio" name="answer1" value="$ANSWER13"> Resposta C
+              <input type="radio" name="answer1" value="$ANSWER11" required> $ANSWER11
+              <input type="radio" name="answer1" value="$ANSWER12"> $ANSWER12
+              <input type="radio" name="answer1" value="$ANSWER13"> $ANSWER13
 
-		<p>2) Pergunta: $QUESTION2</p>
+              <p>2) Question: $QUESTION2</p>
 
-		<input type="radio" name="answer2" value="$ANSWER21"> Resposta A
-		<input type="radio" name="answer2" value="$ANSWER22"> Resposta B
-		<input type="radio" name="answer2" value="$ANSWER23"> Resposta C
+              <input type="radio" name="answer2" value="$ANSWER21" required> $ANSWER21
+              <input type="radio" name="answer2" value="$ANSWER22"> $ANSWER22
+              <input type="radio" name="answer2" value="$ANSWER23"> $ANSWER23
 
-		<p>3) Pergunta: $QUESTION3</p>
-		
-		<input type="radio" name="answer3" value="$ANSWER31"> Resposta A
-		<input type="radio" name="answer3" value="$ANSWER32"> Resposta B
-		<input type="radio" name="answer3" value="$ANSWER33"> Resposta C
-		<br>
-		<br>
-		<input type="submit" value="I WANT SOME ANSWERS ~rage quit~"/>
-	</form>
+              <p>3) Question: $QUESTION3</p>
+              
+              <input type="radio" name="answer3" value="$ANSWER31" required> $ANSWER31
+              <input type="radio" name="answer3" value="$ANSWER32"> $ANSWER32
+              <input type="radio" name="answer3" value="$ANSWER33"> $ANSWER33
+              <br>
+              <br>
+              <input type="submit" value="Show results"/>
+            </form>
 
-	<p>
-</div>
+            <p>
+          </div>

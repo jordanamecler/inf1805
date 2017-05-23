@@ -1,27 +1,27 @@
 <div style="width: 40%; margin: 0 auto;">
-	<h1><u>Kahoot but better</u></h1>
-	<h3>Write your questions marquinho! </h3>
+                <h1><u>Test time</u></h1>
+                <h3>Write your questions and answers!</h3>
+                
+                <form method="POST" action="STARTTEST">
+                  <p>Test's title: <input sytle="width:300px" type="text" name="title" required/></p>
 
-	<p>Test's title: <input sytle="width:300px" type="text" name="title"/></p>
-	
-	<form method="POST" action="start">
-		<p>1) Pergunta:<input style="width:600px" type="text" name="question1"/></p>
-		<p>a) <input style="width:600px" type="text" name="answer11"/></p>
-		<p>b) <input style="width:600px" type="text" name="answer12"/></p>
-		<p>b) <input style="width:600px" type="text" name="answer13"/></p>
+                  <p>1) Pergunta:<input style="width:600px" type="text" name="question1" pattern=".{1,}" required/></p>
+                  <p>a) <input type="radio" name="correctanswer1" value="a11" required> <input style="width:600px" type="text" name="answer11" pattern=".{1,}" required/></p>
+                  <p>b) <input type="radio" name="correctanswer1" value="a12"> <input style="width:600px" type="text" name="answer12" pattern=".{1,}" required/></p>
+                  <p>c) <input type="radio" name="correctanswer1" value="a13"> <input style="width:600px" type="text" name="answer13" pattern=".{1,}" required/></p>
 
-		<p>2) Pergunta: <input style="width:600px" type="text" name="question2"/></p>
-		<p>a) <input style="width:600px" type="text" name="answer21"/></p>
-		<p>b) <input style="width:600px" type="text" name="answer22"/></p>
-		<p>b) <input style="width:600px" type="text" name="answer23"/></p>
+                  <p>2) Pergunta: <input style="width:600px" type="text" name="question2" pattern=".{1,}" required/></p>
+                  <p>a) <input type="radio" name="correctanswer2" value="a21" required> <input style="width:600px" type="text" name="answer21" pattern=".{1,}" required/></p>
+                  <p>b) <input type="radio" name="correctanswer2" value="a22"> <input style="width:600px" type="text" name="answer22" pattern=".{1,}" required/></p>
+                  <p>c) <input type="radio" name="correctanswer2" value="a23"> <input style="width:600px" type="text" name="answer23" pattern=".{1,}" required/></p>
 
-		<p>3) Pergunta: <input style="width:600px" type="text" name="question3"/></p>
-		<p>a) <input style="width:600px" type="text" name="answer31"/></p>
-		<p>b) <input style="width:600px" type="text" name="answer32"/></p>
-		<p>b) <input style="width:600px" type="text" name="answer33"/></p>
+                  <p>3) Pergunta: <input style="width:600px" type="text" name="question3" pattern=".{1,}" required/></p>
+                  <p>a) <input type="radio" name="correctanswer3" value="a31" required> <input style="width:600px" type="text" name="answer31" pattern=".{1,}" required/></p>
+                  <p>b) <input type="radio" name="correctanswer3" value="a32"> <input style="width:600px" type="text" name="answer32" pattern=".{1,}" required/></p>
+                  <p>c) <input type="radio" name="correctanswer3" value="a33"> <input style="width:600px" type="text" name="answer33" pattern=".{1,}" required/></p>
 
-		<input type="submit" value="Start test! uhul"/>
-	</form>
+                  <input type="submit" value="Start test!"/>
+                </form>
 
-	<p>
-</div>
+                <p>
+            </div>
