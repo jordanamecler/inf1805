@@ -16,26 +16,26 @@ buf = [[
 local function createTest()
   buf = [[
               <div style="width: 40%; margin: 0 auto;">
-                <h1><u>Kahoot but better</u></h1>
-                <h3>Write your questions! </h3>
+                <h1><u>Test time</u></h1>
+                <h3>Write your questions and answers!</h3>
                 
                 <form method="POST" action="STARTTEST">
                   <p>Test's title: <input sytle="width:300px" type="text" name="title"/></p>
 
-                  <p>1) Pergunta:<input style="width:600px" type="text" name="question1"/></p>
-                  <p>a) <input style="width:600px" type="text" name="answer11"/></p>
-                  <p>b) <input style="width:600px" type="text" name="answer12"/></p>
-                  <p>c) <input style="width:600px" type="text" name="answer13"/></p>
+                  <p>1) Pergunta:<input style="width:600px" type="text" name="question1" pattern=".{1,}" required/></p>
+                  <p>a) <input style="width:600px" type="text" name="answer11" pattern=".{1,}" required/></p>
+                  <p>b) <input style="width:600px" type="text" name="answer12" pattern=".{1,}" required/></p>
+                  <p>c) <input style="width:600px" type="text" name="answer13" pattern=".{1,}" required/></p>
 
-                  <p>2) Pergunta: <input style="width:600px" type="text" name="question2"/></p>
-                  <p>a) <input style="width:600px" type="text" name="answer21"/></p>
-                  <p>b) <input style="width:600px" type="text" name="answer22"/></p>
-                  <p>c) <input style="width:600px" type="text" name="answer23"/></p>
+                  <p>2) Pergunta: <input style="width:600px" type="text" name="question2" pattern=".{1,}" required/></p>
+                  <p>a) <input style="width:600px" type="text" name="answer21" pattern=".{1,}" required/></p>
+                  <p>b) <input style="width:600px" type="text" name="answer22" pattern=".{1,}" required/></p>
+                  <p>c) <input style="width:600px" type="text" name="answer23" pattern=".{1,}" required/></p>
 
-                  <p>3) Pergunta: <input style="width:600px" type="text" name="question3"/></p>
-                  <p>a) <input style="width:600px" type="text" name="answer31"/></p>
-                  <p>b) <input style="width:600px" type="text" name="answer32"/></p>
-                  <p>c) <input style="width:600px" type="text" name="answer33"/></p>
+                  <p>3) Pergunta: <input style="width:600px" type="text" name="question3" pattern=".{1,}" required/></p>
+                  <p>a) <input style="width:600px" type="text" name="answer31" pattern=".{1,}" required/></p>
+                  <p>b) <input style="width:600px" type="text" name="answer32" pattern=".{1,}" required/></p>
+                  <p>c) <input style="width:600px" type="text" name="answer33" pattern=".{1,}" required/></p>
 
                   <input type="submit" value="Start test! uhul"/>
                 </form>
@@ -48,8 +48,8 @@ end
 local function startTest()
   buf = [[
           <div style="width: 40%; margin: 0 auto;">
-            <h1><u>Kahoot but better</u></h1>
-            <h3>On ur marks, ready, steady, 1, 2, 3, jacareh, jabuti, go!!1! </h3>
+            <h1><u>Test time</u></h1>
+            <h3>Answer the following questions</h3>
 
             <h4>Test title</h4>
             
@@ -73,7 +73,7 @@ local function startTest()
               <input type="radio" name="answer3" value="$ANSWER33"> $ANSWER33
               <br>
               <br>
-              <input type="submit" value="I WANT SOME ANSWERS"/>
+              <input type="submit" value="Show results"/>
             </form>
 
             <p>
@@ -87,8 +87,6 @@ end
 
 local actions = {
   CREATETEST = createTest,
-  STARTTEST = startTest,
-  FINISHTEST = finishTest,
 }
 
 srv = net.createServer(net.TCP)
@@ -109,16 +107,19 @@ function receiver(sck, request)
   if(method == "POST") then
     for k, v in string.gmatch(request, "title(%d+)=([^&]+)") do
       if(v ~= nil) then
+        v = string.gsub(v, "+", " ")
         table.insert(title, v)
       end
     end
     for k, v in string.gmatch(request, "question(%d+)=([^&]+)") do
       if(v ~= nil) then
+        v = string.gsub(v, "+", " ")
         table.insert(questions, v)
       end
     end
     for k, v in string.gmatch(request, "answer(%d+)=([^&]+)") do
       if(v ~= nil) then
+        v = string.gsub(v, "+", " ")
         table.insert(answers, v)
       end
     end
@@ -138,7 +139,17 @@ function receiver(sck, request)
 
   local vals = {
     QUESTION1 = questions[1],
-    ANSWER11 = answers[1]
+    ANSWER11 = answers[1],
+    ANSWER12 = answers[2],
+    ANSWER13 = answers[3],
+    QUESTION2 = questions[2],
+    ANSWER21 = answers[4],
+    ANSWER22 = answers[5],
+    ANSWER23 = answers[6],
+    QUESTION3 = questions[3],
+    ANSWER31 = answers[7],
+    ANSWER32 = answers[8],
+    ANSWER33 = answers[9]
   }
 
   buf = string.gsub(buf, "$(%w+)", vals)
