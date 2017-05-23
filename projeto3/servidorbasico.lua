@@ -9,6 +9,10 @@ title={}
 questions={}
 answers={}
 
+buf = [[
+          <a href="?pin=CREATETEST"><button><b>Create Test</b></button></a>
+      ]]
+
 local function createTest()
   buf = [[
               <div style="width: 40%; margin: 0 auto;">
@@ -52,24 +56,24 @@ local function startTest()
             <form method="POST" action="finished">
               <p>1) Pergunta: $QUESTION1</p>
 
-              <input type="radio" name="answer1" value="$ANSWER11"> Resposta A 
-              <input type="radio" name="answer1" value="$ANSWER12"> Resposta B
-              <input type="radio" name="answer1" value="$ANSWER13"> Resposta C
+              <input type="radio" name="answer1" value="$ANSWER11"> $ANSWER11
+              <input type="radio" name="answer1" value="$ANSWER12"> $ANSWER12
+              <input type="radio" name="answer1" value="$ANSWER13"> $ANSWER13
 
               <p>2) Pergunta: $QUESTION2</p>
 
-              <input type="radio" name="answer2" value="$ANSWER21"> Resposta A
-              <input type="radio" name="answer2" value="$ANSWER22"> Resposta B
-              <input type="radio" name="answer2" value="$ANSWER23"> Resposta C
+              <input type="radio" name="answer2" value="$ANSWER21"> $ANSWER21
+              <input type="radio" name="answer2" value="$ANSWER22"> $ANSWER22
+              <input type="radio" name="answer2" value="$ANSWER23"> $ANSWER23
 
               <p>3) Pergunta: $QUESTION3</p>
               
-              <input type="radio" name="answer3" value="$ANSWER31"> Resposta A
-              <input type="radio" name="answer3" value="$ANSWER32"> Resposta B
-              <input type="radio" name="answer3" value="$ANSWER33"> Resposta C
+              <input type="radio" name="answer3" value="$ANSWER31"> $ANSWER31
+              <input type="radio" name="answer3" value="$ANSWER32"> $ANSWER32
+              <input type="radio" name="answer3" value="$ANSWER33"> $ANSWER33
               <br>
               <br>
-              <input type="submit" value="I WANT SOME ANSWERS ~rage quit~"/>
+              <input type="submit" value="I WANT SOME ANSWERS"/>
             </form>
 
             <p>
@@ -78,9 +82,13 @@ local function startTest()
         ]]
 end
 
+local function finishTest()
+end
+
 local actions = {
   CREATETEST = createTest,
   STARTTEST = startTest,
+  FINISHTEST = finishTest,
 }
 
 srv = net.createServer(net.TCP)
@@ -97,45 +105,40 @@ function receiver(sck, request)
 
   local _GET = {}
   local _POST = {}
-  
-  print(request)
+
   if(method == "POST") then
     for k, v in string.gmatch(request, "title(%d+)=([^&]+)") do
-      print(v)
       if(v ~= nil) then
         table.insert(title, v)
       end
     end
     for k, v in string.gmatch(request, "question(%d+)=([^&]+)") do
-      print(v)
       if(v ~= nil) then
         table.insert(questions, v)
       end
     end
     for k, v in string.gmatch(request, "answer(%d+)=([^&]+)") do
-      print(v)
       if(v ~= nil) then
         table.insert(answers, v)
       end
     end
+    startTest()
+
   elseif(method == "GET") then
     if (vars ~= nil)then
       for k, v in string.gmatch(vars, "(%w+)=(%w+)&*") do
-        print(v)
         _GET[k] = v
       end
     end
+
+    local action = actions[_GET.pin]
+    if action then action() end
+
   end
 
-  buf = [[
-          <a href="?pin=CREATETEST"><button><b>Create Test</b></button></a>
-        ]]
-
-  local action = actions[_GET.pin]
-  print(_GET.pin)
-  if action then action() end
-
   local vals = {
+    QUESTION1 = questions[1],
+    ANSWER11 = answers[1]
   }
 
   buf = string.gsub(buf, "$(%w+)", vals)
