@@ -5,18 +5,19 @@ local led={}
 led[0]="OFF"
 led[1]="OFF"
 
-local questions={}
-local answers={}
+title={}
+questions={}
+answers={}
 
 local function createTest()
   buf = [[
               <div style="width: 40%; margin: 0 auto;">
                 <h1><u>Kahoot but better</u></h1>
                 <h3>Write your questions! </h3>
-
-                <p>Test's title: <input sytle="width:300px" type="text" name="title"/></p>
                 
                 <form method="POST" action="STARTTEST">
+                  <p>Test's title: <input sytle="width:300px" type="text" name="title"/></p>
+
                   <p>1) Pergunta:<input style="width:600px" type="text" name="question1"/></p>
                   <p>a) <input style="width:600px" type="text" name="answer11"/></p>
                   <p>b) <input style="width:600px" type="text" name="answer12"/></p>
@@ -97,7 +98,14 @@ function receiver(sck, request)
   local _GET = {}
   local _POST = {}
   
+  print(request)
   if(method == "POST") then
+    for k, v in string.gmatch(request, "title(%d+)=([^&]+)") do
+      print(v)
+      if(v ~= nil) then
+        table.insert(title, v)
+      end
+    end
     for k, v in string.gmatch(request, "question(%d+)=([^&]+)") do
       print(v)
       if(v ~= nil) then
