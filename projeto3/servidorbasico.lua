@@ -21,10 +21,10 @@ local function createTest()
                 <h3>Write your questions and answers!</h3>
                 
                 <form method="POST" action="STARTTEST">
-                  <p>Test's title: <input sytle="width:300px" type="text" name="title"/></p>
+                  <p>Test's title: <input sytle="width:300px" type="text" name="title" required/></p>
 
                   <p>1) Pergunta:<input style="width:600px" type="text" name="question1" pattern=".{1,}" required/></p>
-                  <p>a) <input type="radio" name="correctanswer1" value="a11 required"> <input style="width:600px" type="text" name="answer11" pattern=".{1,}" required/></p>
+                  <p>a) <input type="radio" name="correctanswer1" value="a11" required> <input style="width:600px" type="text" name="answer11" pattern=".{1,}" required/></p>
                   <p>b) <input type="radio" name="correctanswer1" value="a12"> <input style="width:600px" type="text" name="answer12" pattern=".{1,}" required/></p>
                   <p>c) <input type="radio" name="correctanswer1" value="a13"> <input style="width:600px" type="text" name="answer13" pattern=".{1,}" required/></p>
 
@@ -52,7 +52,7 @@ local function startTest()
             <h1><u>Test time</u></h1>
             <h3>Answer the following questions</h3>
 
-            <h4>Test title</h4>
+            <h4> $TITLE </h4>
             
             <form method="POST" action="RESULTS">
               <p>1) Question: $QUESTION1</p>
@@ -89,7 +89,7 @@ local function finishTest()
             <h1><u>Results</u></h1>
             <h3>Check your results</h3>
 
-            <h4>Test title</h4>
+            <h4> $TITLE </h4>
             
             <p> Question: $QUESTION1</p>
             <p> Correct Answer: $CORRECTANSWER1</p>
@@ -128,8 +128,9 @@ function receiver(sck, request)
   local _POST = {}
 
   if(method == "POST") then
-    for k, v in string.gmatch(request, "title(%d+)=([^&]+)") do
+    for k, v in string.gmatch(request, "title=([^&]+)") do
       if(v ~= nil) then
+        print("titulo aqui")
         v = string.gsub(v, "+", " ")
         table.insert(title, v)
       end
@@ -197,7 +198,8 @@ function receiver(sck, request)
     ANSWER3 = answers[12],
     CORRECTANSWER1 = correctanswers[1],
     CORRECTANSWER2 = correctanswers[2],
-    CORRECTANSWER3 = correctanswers[3]
+    CORRECTANSWER3 = correctanswers[3],
+    TITLE = title[1]
   }
 
   buf = string.gsub(buf, "$(%w+)", vals)
