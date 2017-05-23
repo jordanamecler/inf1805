@@ -24,17 +24,17 @@ local function createTest()
                   <p>Test's title: <input sytle="width:300px" type="text" name="title"/></p>
 
                   <p>1) Pergunta:<input style="width:600px" type="text" name="question1" pattern=".{1,}" required/></p>
-                  <p>a) <input type="radio" name="correctanswer1" value="a11"> <input style="width:600px" type="text" name="answer11" pattern=".{1,}" required/></p>
+                  <p>a) <input type="radio" name="correctanswer1" value="a11 required"> <input style="width:600px" type="text" name="answer11" pattern=".{1,}" required/></p>
                   <p>b) <input type="radio" name="correctanswer1" value="a12"> <input style="width:600px" type="text" name="answer12" pattern=".{1,}" required/></p>
                   <p>c) <input type="radio" name="correctanswer1" value="a13"> <input style="width:600px" type="text" name="answer13" pattern=".{1,}" required/></p>
 
                   <p>2) Pergunta: <input style="width:600px" type="text" name="question2" pattern=".{1,}" required/></p>
-                  <p>a) <input type="radio" name="correctanswer2" value="a21"> <input style="width:600px" type="text" name="answer21" pattern=".{1,}" required/></p>
+                  <p>a) <input type="radio" name="correctanswer2" value="a21" required> <input style="width:600px" type="text" name="answer21" pattern=".{1,}" required/></p>
                   <p>b) <input type="radio" name="correctanswer2" value="a22"> <input style="width:600px" type="text" name="answer22" pattern=".{1,}" required/></p>
                   <p>c) <input type="radio" name="correctanswer2" value="a23"> <input style="width:600px" type="text" name="answer23" pattern=".{1,}" required/></p>
 
                   <p>3) Pergunta: <input style="width:600px" type="text" name="question3" pattern=".{1,}" required/></p>
-                  <p>a) <input type="radio" name="correctanswer3" value="a31"> <input style="width:600px" type="text" name="answer31" pattern=".{1,}" required/></p>
+                  <p>a) <input type="radio" name="correctanswer3" value="a31" required> <input style="width:600px" type="text" name="answer31" pattern=".{1,}" required/></p>
                   <p>b) <input type="radio" name="correctanswer3" value="a32"> <input style="width:600px" type="text" name="answer32" pattern=".{1,}" required/></p>
                   <p>c) <input type="radio" name="correctanswer3" value="a33"> <input style="width:600px" type="text" name="answer33" pattern=".{1,}" required/></p>
 
@@ -57,19 +57,19 @@ local function startTest()
             <form method="POST" action="RESULTS">
               <p>1) Question: $QUESTION1</p>
 
-              <input type="radio" name="answer1" value="$ANSWER11"> $ANSWER11
+              <input type="radio" name="answer1" value="$ANSWER11" required> $ANSWER11
               <input type="radio" name="answer1" value="$ANSWER12"> $ANSWER12
               <input type="radio" name="answer1" value="$ANSWER13"> $ANSWER13
 
               <p>2) Question: $QUESTION2</p>
 
-              <input type="radio" name="answer2" value="$ANSWER21"> $ANSWER21
+              <input type="radio" name="answer2" value="$ANSWER21" required> $ANSWER21
               <input type="radio" name="answer2" value="$ANSWER22"> $ANSWER22
               <input type="radio" name="answer2" value="$ANSWER23"> $ANSWER23
 
               <p>3) Question: $QUESTION3</p>
               
-              <input type="radio" name="answer3" value="$ANSWER31"> $ANSWER31
+              <input type="radio" name="answer3" value="$ANSWER31" required> $ANSWER31
               <input type="radio" name="answer3" value="$ANSWER32"> $ANSWER32
               <input type="radio" name="answer3" value="$ANSWER33"> $ANSWER33
               <br>
