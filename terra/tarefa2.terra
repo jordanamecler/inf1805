@@ -1,0 +1,41 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+
+var ushort nodeId = getNodeId();
+
+pktype usrMsg from radioMsg with
+	var ubyte[4] d8;
+	var ushort[4] d16;
+	var ulong[2] d32;
+end
+
+var usrMsg tempMsg;
+var usrMsg forwardMsg;
+
+if nodeId ~= 1 then
+	forwardMsg.source = nodeId;
+	
+	if nodeId == 11 then
+		forwardMsg.target = 1;
+	else
+		forwardMsg.target = nodeId - 1;
+	end
+
+	par do
+	// recebe radio do filho e coloca na fila
+		forwardMsg = await RECEIVE;
+		stat = qPut(forwardMsg);
+		
+		await Q_READY;
+		stat = qGet(forwardMsg);
+	with
+	// le temperatura e manda pro pai
+		loop do
+			await 10s;
+			emit REQ_TEMP();
+			
+			forwardMsg.d16[0] = await TEMP;
+			emit SEND(forwardMsg);
+			await SEND_DONE;
+		end
+	end
+end
