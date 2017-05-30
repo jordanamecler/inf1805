@@ -10,10 +10,12 @@ end
 
 var usrMsg tempMsg;
 var usrMsg forwardMsg;
+var usrMsg msgRadio;
+var ubyte stat;
 
 if nodeId ~= 1 then
-	forwardMsg.source = nodeId;
-	
+
+	tempMsg.source = nodeId;
 	if nodeId == 11 then
 		forwardMsg.target = 1;
 	else
@@ -21,20 +23,24 @@ if nodeId ~= 1 then
 	end
 
 	par do
-	// recebe radio do filho e coloca na fila
-		forwardMsg = await RECEIVE;
-		stat = qPut(forwardMsg);
-		
-		await Q_READY;
-		stat = qGet(forwardMsg);
-	with
-	// le temperatura e manda pro pai
 		loop do
 			await 10s;
 			emit REQ_TEMP();
-			
-			forwardMsg.d16[0] = await TEMP;
-			emit SEND(forwardMsg);
+			tempMsg.d16[0] = await TEMP;
+
+			stat = qPut(tempMsg);
+		end
+	with
+		loop do
+			forwardMsg = await RECEIVE;
+
+			stat = qPut(forwardMsg);
+		end
+	with
+		loop do
+			await Q_READY;
+			stat = qGet(msgRadio);
+			emit SEND(msgRadio);
 			await SEND_DONE;
 		end
 	end
