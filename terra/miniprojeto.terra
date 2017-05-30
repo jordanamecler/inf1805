@@ -18,14 +18,20 @@ var usrMsg firstMsg;
 var ushort noPai = 0;
 var ubyte stat;
 
+var ubyte espera = 100;
+var ubyte salto = 0;
+
 tempMsg.type = DATA_MESSAGE;
 
 firstMsg.target = BROADCAST;
 firstMsg.type = FIRST_MESSAGE;
 
 if nodeId == 11 then
+	await 1s;
 	// enviar inicio do broadcast 
 	firstMsg.source = nodeId;
+	salto = 1;
+	firstMsg.d8[0] = salto;
 	noPai = 1;
 else
 	// esperar o broadcast e salvar o pai, enviar um novo broadcast com
@@ -33,12 +39,17 @@ else
 	firstMsg = await RECEIVE(FIRST_MESSAGE);
 	noPai = firstMsg.source;
 	firstMsg.source = nodeId;
+	salto = firstMsg.d8[0] + 1;
+	firstMsg.d8[0] = salto;
 end
+
+espera = espera * salto;
 
 emit SEND(firstMsg);
 await SEND_DONE;	
 
 par do
+	await (espera)ms;
 	loop do
 		tempMsg.source = nodeId;
 		if nodeId == 11 then
@@ -62,8 +73,8 @@ with
 		await Q_READY;
 		loop do
 			stat = qGet(msgRadio);
-			emit SEND(msgRadio);
-			await SEND_DONE;
+			emit SEND_ACK(msgRadio);
+			await SEND_DONE_ACK;
 			if qSize() == 0 then
 				break;
 			end
