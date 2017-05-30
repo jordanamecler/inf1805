@@ -13,7 +13,7 @@ var usrMsg forwardMsg;
 var usrMsg msgRadio;
 var ubyte stat;
 
-if nodeId ~= 1 then
+if nodeId != 1 then
 
 	tempMsg.source = nodeId;
 	forwardMsg.source = nodeId;
