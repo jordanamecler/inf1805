@@ -40,9 +40,14 @@ if nodeId != 1 then
 	with
 		loop do
 			await Q_READY;
-			stat = qGet(msgRadio);
-			emit SEND(msgRadio);
-			await SEND_DONE;
+			loop do
+				stat = qGet(msgRadio);
+				emit SEND(msgRadio);
+				await SEND_DONE;
+				if qSize() == 0 then
+					break;
+				end
+			end
 		end
 	end
 end
