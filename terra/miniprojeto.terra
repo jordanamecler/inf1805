@@ -44,7 +44,7 @@ else
 end
 
 espera = espera * salto;
-
+firstMsg.d8[1] = 0;
 emit SEND(firstMsg);
 await SEND_DONE;	
 
@@ -52,6 +52,7 @@ par do
 	await (espera)ms;
 	loop do
 		tempMsg.source = nodeId;
+		tempMsg.d8[1] = tempMsg.d8[1] + 1;
 		if nodeId == 11 then
 			tempMsg.target = 1;
 		else
@@ -75,6 +76,7 @@ with
 			stat = qGet(msgRadio);
 			emit SEND_ACK(msgRadio);
 			await SEND_DONE_ACK;
+			await 100ms;
 			if qSize() == 0 then
 				break;
 			end
