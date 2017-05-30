@@ -16,10 +16,13 @@ var ubyte stat;
 if nodeId ~= 1 then
 
 	tempMsg.source = nodeId;
+	forwardMsg.source = nodeId;
 	if nodeId == 11 then
+		tempMsg.target = 1;
 		forwardMsg.target = 1;
 	else
 		forwardMsg.target = nodeId - 1;
+		tempMsg.target = nodeId - 1;
 	end
 
 	par do
@@ -27,13 +30,11 @@ if nodeId ~= 1 then
 			await 10s;
 			emit REQ_TEMP();
 			tempMsg.d16[0] = await TEMP;
-
 			stat = qPut(tempMsg);
 		end
 	with
 		loop do
 			forwardMsg = await RECEIVE;
-
 			stat = qPut(forwardMsg);
 		end
 	with
