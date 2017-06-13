@@ -18,7 +18,7 @@ var usrMsg firstMsg;
 var ushort noPai = 0;
 var ubyte stat;
 
-var ubyte espera = 100;
+var ubyte espera = 50;
 var ubyte salto = 0;
 
 tempMsg.type = DATA_MESSAGE;
@@ -30,8 +30,7 @@ if nodeId == 11 then
 	await 1s;
 	// enviar inicio do broadcast 
 	firstMsg.source = nodeId;
-	salto = 1;
-	firstMsg.d8[0] = salto;
+	firstMsg.d8[0] = 1;
 	noPai = 1;
 else
 	// esperar o broadcast e salvar o pai, enviar um novo broadcast com
@@ -39,17 +38,16 @@ else
 	firstMsg = await RECEIVE(FIRST_MESSAGE);
 	noPai = firstMsg.source;
 	firstMsg.source = nodeId;
-	salto = firstMsg.d8[0] + 1;
-	firstMsg.d8[0] = salto;
+	firstMsg.d8[0] = firstMsg.d8[0] + 1;
 end
 
-espera = espera * salto;
+espera = espera + (10*(firstMsg.d8[0]));
 firstMsg.d8[1] = 0;
 emit SEND(firstMsg);
 await SEND_DONE;	
 
 par do
-	await (espera)ms;
+	await 1s;
 	loop do
 		tempMsg.source = nodeId;
 		tempMsg.d8[1] = tempMsg.d8[1] + 1;
@@ -62,6 +60,7 @@ par do
 		emit REQ_TEMP();
 		tempMsg.d16[0] = await TEMP;
 		stat = qPut(tempMsg);
+		await (espera)ms;
 	end
 with
 	loop do
@@ -76,7 +75,7 @@ with
 			stat = qGet(msgRadio);
 			emit SEND_ACK(msgRadio);
 			await SEND_DONE_ACK;
-			await 100ms;
+			await 50ms;
 			if qSize() == 0 then
 				break;
 			end
