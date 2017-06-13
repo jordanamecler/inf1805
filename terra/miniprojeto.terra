@@ -49,6 +49,7 @@ emit SEND(firstMsg);
 await SEND_DONE;	
 
 par do
+	// mensagem de temperatura
 	await 1s;
 	loop do
 		tempMsg.source = nodeId;
@@ -66,12 +67,14 @@ par do
 		await (espera)ms;
 	end
 with
+	// mensagem do filho
 	loop do
 		forwardMsg = await RECEIVE(DATA_MESSAGE);
 		forwardMsg.target = noPai;
 		stat = qPut(forwardMsg);
 	end
 with
+	// envia mensagens da pilha
 	loop do
 		await Q_READY;
 		loop do
