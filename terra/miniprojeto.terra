@@ -34,13 +34,15 @@ if nodeId == 11 then
 	noPai = 1;
 else
 	// esperar o broadcast e salvar o pai, enviar um novo broadcast com
-    // source mudado
+    	// source mudado
 	firstMsg = await RECEIVE(FIRST_MESSAGE);
 	noPai = firstMsg.source;
 	firstMsg.source = nodeId;
+	// a cada 'camada' de nos adiciona 1 pra enviarem em tempos diferentes
 	firstMsg.d8[0] = firstMsg.d8[0] + 1;
 end
 
+// espera varia entre 50, 100, 150, 200... por camada 
 espera = espera + (50*(firstMsg.d8[0]));
 firstMsg.d8[1] = 0;
 emit SEND(firstMsg);
@@ -50,6 +52,7 @@ par do
 	await 1s;
 	loop do
 		tempMsg.source = nodeId;
+                // definicao do round
 		tempMsg.d8[1] = tempMsg.d8[1] + 1;
 		if nodeId == 11 then
 			tempMsg.target = 1;
