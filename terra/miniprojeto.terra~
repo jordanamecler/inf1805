@@ -41,7 +41,7 @@ else
 	firstMsg.d8[0] = firstMsg.d8[0] + 1;
 end
 
-espera = espera + (10*(firstMsg.d8[0]));
+espera = espera + (50*(firstMsg.d8[0]));
 firstMsg.d8[1] = 0;
 emit SEND(firstMsg);
 await SEND_DONE;	

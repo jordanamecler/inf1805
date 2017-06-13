@@ -293,8 +293,8 @@ a0 | 00287 a0 pop ubyte 147                 | pop firstMsg.d8[0]
 24 | 00291 .12 
 90 | 00292 90 push_v ubyte 147                    | push_v ubyte firstMsg.d8[0] [Optm:: push_c addr + deref]
 93 | 00293 93 
-40 | 00294 40 push_c 10                     | push 10
-0a | 00295 0a 
+40 | 00294 40 push_c 50                     | push 50
+32 | 00295 32 
 08 | 00296 08 mult                          | mult
 90 | 00297 90 push_v ubyte 170              | push espera:ubyte
 aa | 00298 aa 
