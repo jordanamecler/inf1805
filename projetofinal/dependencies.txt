@@ -1,3 +1,1 @@
-lua
-luarocket
 mosquitto
