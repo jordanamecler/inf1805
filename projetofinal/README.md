@@ -5,6 +5,7 @@
 - NodeMCU ESP8266
 - Speakers
 - PIR sensors
+- Python 2.7 installed
 
 ## Install
 - On MacOSX:
@@ -16,7 +17,7 @@ $ pip install -r requirements.txt
 
 ## Running
 
-- Call the follow on your shell to start the Mosquitto broker on localhost:
+- Call the following on your shell to start the Mosquitto broker on localhost:
 ```
 $ mosquitto
 ```
