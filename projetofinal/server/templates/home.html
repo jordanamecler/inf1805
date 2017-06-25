@@ -8,12 +8,12 @@
 </head>
 <body>
 	<h1>Sounder</h1>
-	<form method="GET" action="/stream">
+	<form method="POST" action="/stream">
 		<h4>Nodes conectados</h4>
-		
+		<h6>Adicione os nós vizinhos de cada um separados por vigulas</h6>
 		{% for n in nodes %}
 			<p>Node {{n.number}}: {{n.name}}</p>
-			<p>Vizinhos: <input type="text" name="vizinhos"></p>
+			<p>Vizinhos: <input type="text" name="vizinhos_{{n.number}}" value=""></p>
 			<br>
 		{% endfor %}
 		
