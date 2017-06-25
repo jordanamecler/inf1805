@@ -15,6 +15,10 @@ class Node(object):
 	def add_neighbour(self, node):
 		self.neighbours[node.number] = node
 
+	@property
+	def get_neighbours(self):
+		return self.nodes.values()
+
 class NodeNet(object):
 
 	def __init__(self):
@@ -32,4 +36,6 @@ class NodeNet(object):
 		except:
 			return None
 
+	def get_nodes(self):
+		return self.nodes.values()
 

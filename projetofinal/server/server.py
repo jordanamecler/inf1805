@@ -1,12 +1,12 @@
-import time
 import json
 import paho.mqtt.client as mqtt
 from flask import Flask, render_template, redirect, url_for
-from song import AudioHandler
+from song import AudioHandler, StreammingThread
 from node_net import NodeNet, Node
 
 
 app = Flask(__name__)
+threads = []
 
 ################################
 #         Web views
@@ -14,14 +14,23 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('home.html')
+    return render_template('home.html', nodes=node_net.get_nodes())
 
 @app.route('/stream')
 def start():
-    return render_template('streaming.html')
+    print "threads: ", len(threads)
+    if len(threads) == 0:
+        thread = StreammingThread(1, client, audio)
+        thread.start()
+        threads.append(thread)
+
+    return render_template('streaming.html', song_name=audio.current_song["name"])
 
 @app.route('/stop')
 def stop():
+    if len(threads) == 1:
+        threads[0].stop()
+        del threads[0]
     return redirect(url_for('index'))
 
 
@@ -61,26 +70,6 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe('song/stream')
 
 
-def main():
-
-    song = {
-        "name": "jump_8k", 
-        "path": "songs/jump_8k.u8",
-    }
-    audio = AudioHandler(song["path"])
-
-    while True:
-           
-        mqtt.publish("song/info", json.dumps(song))
-
-        for chunk in audio.get_chunks():
-            mqtt.publish("song/stream", chunk)
-
-            time.sleep(2)
-
-        print "Restart song"
-
-
 if __name__ == '__main__':
 
     hostname = '127.0.0.1'
@@ -88,6 +77,7 @@ if __name__ == '__main__':
     keep_alive = 60
 
     node_net = NodeNet()
+    audio = AudioHandler()
 
     # Start web server with mqtt
 

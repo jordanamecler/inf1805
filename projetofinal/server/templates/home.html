@@ -9,6 +9,14 @@
 <body>
 	<h1>Sounder</h1>
 	<form method="GET" action="/stream">
+		<h4>Nodes conectados</h4>
+		
+		{% for n in nodes %}
+			<p>Node {{n.number}}: {{n.name}}</p>
+			<p>Vizinhos: <input type="text" name="vizinhos"></p>
+			<br>
+		{% endfor %}
+		
 		<input type="submit" value="Start stream">
 	</form>
 </body>

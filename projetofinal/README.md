@@ -7,6 +7,10 @@
 - PIR sensors
 - Python 2.7 installed
 
+#### Node firmware
+
+Make sure your NodeMCU firmware has the PCM and MQTT modules. Otherwise, download a new build on https://nodemcu-build.com/ and flash it following this [tutorial](https://nodemcu.readthedocs.io/en/master/en/flash/).
+
 ## Install
 - On MacOSX:
 ```

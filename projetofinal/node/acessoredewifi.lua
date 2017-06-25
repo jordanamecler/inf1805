@@ -1,7 +1,7 @@
 wificonf = {
   -- verificar ssid e senha
-  ssid = "terra_iot",
-  pwd = "projeto_iot",
+  ssid = "Nem Tenta 2",
+  pwd = "ns0tcqdn!@#",
   save = false
 }
 
