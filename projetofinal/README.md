@@ -21,7 +21,7 @@ $ pip install -r requirements.txt
 
 ## Running
 
-- Call the following on your shell to start the Mosquitto broker on http://localhost:1883:
+- Call the following on your shell to start the Mosquitto broker on localhost:1883:
 ```
 $ mosquitto
 ```
