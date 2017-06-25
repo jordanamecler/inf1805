@@ -43,7 +43,7 @@ $ mosquitto_pub -d -t node/connect -m '{ "number": 2, "name": "Room B" }'
 $ mosquitto_pub -d -t node/connect -m '{ "number": 3, "name": "Room C" }'
 ```
 Refresh the page and you should see the nodes there.
-Now, start these two subscribers on a new terminal window:
+Now, start these two subscribers on new terminal windows:
 
 ```
 $ mosquitto_sub -d -t song/info
