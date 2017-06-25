@@ -21,7 +21,7 @@ $ pip install -r requirements.txt
 
 ## Running
 
-- Call the following on your shell to start the Mosquitto broker on localhost:
+- Call the following on your shell to start the Mosquitto broker on http://localhost:1883:
 ```
 $ mosquitto
 ```
@@ -33,16 +33,25 @@ $ python server.py
 
 ## Example
 
-- With both the mosquitto broker and the ```server.py``` running, call these commands on different terminal windows:
+- With both the mosquitto broker and the ```server.py``` running, access the web interface at http://localhost:8000 and
+on a new terminal window, call the following commands to connect 3 nodes:
 ```
-$ mosquitto_pub -d -t node/connect -m '{ "number": 1, "name": "classroom" }'
+$ mosquitto_pub -d -t node/connect -m '{ "number": 1, "name": "Room A" }'
 
+$ mosquitto_pub -d -t node/connect -m '{ "number": 2, "name": "Room B" }'
+
+$ mosquitto_pub -d -t node/connect -m '{ "number": 3, "name": "Room C" }'
+```
+Refresh the page and you should see the nodes there.
+Now, start these two subscribers on a new terminal window:
+
+```
 $ mosquitto_sub -d -t song/info
 
 $ mosquitto_sub -d -t song/stream
 ```
-
-You should see the results being printed on the ```server.py``` window and on the subscribers window.
+and click on "Start stream".
+You should see the results being printed on the subscribers window.
 
 ## Topics
 
