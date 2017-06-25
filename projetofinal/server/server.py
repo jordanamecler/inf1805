@@ -56,8 +56,8 @@ def handle_node_connect(client, userdata, msg):
 def handle_node_sensor(client, userdata, msg):
     print("Handle node sensor...")
     
-    # recebe informacao de proximidade de algum sensor
-    # e avisa os sensores vizinhos que devem aumentar a musica
+    # TODO: receber informacao de proximidade de algum sensor
+    # e avisar os sensores vizinhos que devem aumentar a musica
     # pegar vizinhos pelo node_net.graph
     # ex:
     #   node_number = ...
