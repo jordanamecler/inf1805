@@ -1,12 +1,11 @@
 wificonf = {
   -- verificar ssid e senha
-  ssid = "Nem Tenta 2",
-  pwd = "ns0tcqdn!@#",
+  ssid = "terra_iot",
+  pwd = "projeto_iot",
   save = false
 }
 
 
 wifi.sta.config(wificonf)
 print("modo: ".. wifi.setmode(wifi.STATION))
-print(wifi.sta.getip())
-
+wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, function (T) print(wifi.sta.getip()) end)

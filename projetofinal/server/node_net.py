@@ -23,6 +23,7 @@ class NodeNet(object):
     def add_node(self, number, name):
         node = Node(number, name)
         self.nodes[number] = node
+        self.graph[number] = set()
         return node
 
     def get_node(self, number):

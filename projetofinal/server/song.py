@@ -4,7 +4,7 @@ import threading
 
 class AudioHandler(object):
 
-    def __init__(self, chunk_size=5000):
+    def __init__(self, chunk_size=1000):
         self.chunk_size = chunk_size
         self.songs = songs = [
             {
