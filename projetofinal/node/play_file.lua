@@ -23,7 +23,7 @@ function cb_paused(d)
   print("playback paused")
 end
 
-file.open("jump_8k.u8", "r")
+file.open("jump_1.u8", "r")
 
 drv = pcm.new(pcm.SD, 1)
 

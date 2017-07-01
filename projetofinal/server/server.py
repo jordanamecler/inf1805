@@ -31,7 +31,14 @@ def start():
         thread.start()
         threads.append(thread)
 
-    return render_template('streaming.html', song_name=audio.current_song["name"])
+    edge_list = []
+    for v, edges in node_net.graph.items():
+        print edges
+        for e in edges:
+            edge_list.append({"from":v, "to":e})
+    print edge_list
+
+    return render_template('streaming.html', song_name=audio.current_song["name"], nodes=node_net.get_nodes(), edges=edge_list)
 
 
 @app.route('/stop')
