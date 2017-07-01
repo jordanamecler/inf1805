@@ -11,7 +11,7 @@ function cb_drained(d)
 
   file.seek("set", 0)
   -- uncomment the following line for continuous playback
-  --d:play(pcm.RATE_8K)
+  d:play(pcm.RATE_8K)
 end
 
 function cb_stopped(d)
@@ -23,12 +23,20 @@ function cb_paused(d)
   print("playback paused")
 end
 
-file.open("jump_1.u8", "r")
+
+if file.open("jump_1.u8", "r") then
+	print ("abriu musica")
+else
+	print ("nao abriu musica")
+end
 
 drv = pcm.new(pcm.SD, 1)
 
 -- fetch data in chunks of FILE_READ_CHUNK (1024) from file
-drv:on("data", function(drv) return file.read() end)
+drv:on("data", function(drv) 
+		print ("read chunk")
+		return file.read() 
+	end)
 
 -- get called back when all samples were read from the file
 drv:on("drained", cb_drained)

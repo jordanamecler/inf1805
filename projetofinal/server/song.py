@@ -65,7 +65,7 @@ class StreammingThread(threading.Thread):
 
             for chunk in audio.get_chunks(self.audio.current_song):
                 client.publish("song/stream", chunk)
-                time.sleep(0.5)
+                time.sleep(0.12)
 
                 if self.should_stop:
                     return 
