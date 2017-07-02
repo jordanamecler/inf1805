@@ -92,54 +92,74 @@ end
 --                        Main
 -- ****************************************************************************
 
-local hostname = "192.168.100.101" -- ip local do computador
-local port = 1883
-NODE_ID = 1 -- deve variar de node pra node
+local function main()
+  local hostname = "192.168.100.101" -- ip local do computador
+  local port = 1883
+  NODE_ID = 3 -- deve variar de node pra node
 
-chunkList = List.new()
-volume = 0
-sensedPresence = false
-start = true
+  chunkList = List.new()
+  volume = 0
+  sensedPresence = false
+  start = true
 
--- gpio.trig(1, "both", function(level) print(level) end)
+  -- gpio.trig(1, "both", function(level) print(level) end)
 
-local m = mqtt.Client("no1", 120)
+  local m = mqtt.Client("no3", 123)
 
-m:connect(hostname, port, 0, conectado, 
-    function(client, reason) 
-        print("failed reason: "..reason) 
+  m:connect(hostname, port, 0, conectado, 
+      function(client, reason) 
+          print("failed reason: "..reason) 
+      end
+  )
+
+  m:on("message", function(client, topic, data)
+
+    if topic == "song/stream" then
+
+      -- print("stream")
+      handle_stream(data)
+      data = nil
+
+    elseif topic == "song/info" then
+
+      print(data)
+    
+    elseif topic == "node/neighbours" then
+      print(data)
     end
-)
-
-m:on("message", function(client, topic, data)
-
-  if topic == "song/stream" then
-
-    -- print("stream")
-    handle_stream(data)
-    data = nil
-
-  elseif topic == "song/info" then
-
-    print(data)
-  
-  elseif topic == "node/neighbours" then
-    print(data)
-  end
-end)
+  end)
 
 
-local drv = pcm.new(pcm.SD, 1)
- 
- -- fetch data in chunks of FILE_READ_CHUNK (1024) from file
-drv:on("data", fetch_data)
+  local drv = pcm.new(pcm.SD, 1)
+   
+   -- fetch data in chunks of FILE_READ_CHUNK (1024) from file
+  drv:on("data", fetch_data)
 
- -- get called back when all samples were read from the file
-drv:on("drained", cb_drained)
- 
-drv:on("stopped", cb_stopped)
-drv:on("paused", cb_paused)
+   -- get called back when all samples were read from the file
+  drv:on("drained", cb_drained)
+   
+  drv:on("stopped", cb_stopped)
+  drv:on("paused", cb_paused)
 
-drv:play(pcm.RATE_8K)
+  drv:play(pcm.RATE_8K)
 
+end
+
+
+wificonf = {
+  -- verificar ssid e senha
+  ssid = "Nem Tenta 2",
+  pwd = "ns0tcqdn!@#",
+  save = false
+}
+
+wifi.sta.config(wificonf)
+print("modo: ".. wifi.setmode(wifi.STATION))
+
+wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, 
+    function (T) 
+      print(wifi.sta.getip()) 
+      main()
+    end
+  )
 
