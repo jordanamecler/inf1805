@@ -1,4 +1,4 @@
-# Museum Audio Streamer
+# Multi-Speaker Wireless Audio Streamming
 
 ## Requirements
 
