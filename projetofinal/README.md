@@ -1,4 +1,4 @@
-# Multi-Speaker Wireless Audio Streamming
+# Multi-Speaker Wireless Audio Streaming
 
 ## Requirements
 
